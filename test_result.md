@@ -340,6 +340,30 @@ frontend:
         agent: "testing"
         comment: "✅ TESTED: Seller verification page working correctly at /seller/business-verification. All form fields visible (GST, PAN, Bank Account, Aadhaar). Verification status display working. ROUTE ISSUE: Review request mentioned /seller/verification but actual route is /seller/business-verification."
 
+  - task: "Seller Orders and Shipping Labels"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/seller/OrdersManagement.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Seller orders page working correctly at /seller/orders. Orders display properly, shipping label generation buttons available. Warehouse selection functionality present. Orders management fully functional."
+
+  - task: "Seller Warehouse Management"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/seller/WarehouseManagement.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Seller warehouses page working correctly at /seller/warehouses. Page loads properly and warehouse management functionality is accessible."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
