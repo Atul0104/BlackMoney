@@ -468,7 +468,12 @@ export default function CheckoutPage() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      {savedAddresses.length === 0 ? (
+                      {addressesLoading ? (
+                        <div className="text-center py-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                          <p className="text-gray-500">Loading addresses...</p>
+                        </div>
+                      ) : savedAddresses.length === 0 ? (
                         <div className="text-center py-8">
                           <MapPin className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                           <p className="text-gray-500 mb-4">No saved addresses</p>
