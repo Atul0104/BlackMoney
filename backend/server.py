@@ -726,6 +726,90 @@ class SellerPayout(BaseModel):
 class NotificationUpdate(BaseModel):
     is_read: bool = True
 
+# ============== STOREFRONT VISIBILITY SETTINGS ==============
+class StorefrontVisibility(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = "storefront_visibility"
+    show_hero_banner: bool = True
+    show_ticker: bool = True
+    show_categories: bool = True
+    show_most_viewed: bool = True
+    show_trending: bool = True
+    show_bestsellers: bool = True
+    show_new_arrivals: bool = True
+    show_offer_cards: bool = True
+    show_bank_offers: bool = True
+    show_view_store: bool = True
+    show_footer: bool = True
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class StorefrontVisibilityUpdate(BaseModel):
+    show_hero_banner: Optional[bool] = None
+    show_ticker: Optional[bool] = None
+    show_categories: Optional[bool] = None
+    show_most_viewed: Optional[bool] = None
+    show_trending: Optional[bool] = None
+    show_bestsellers: Optional[bool] = None
+    show_new_arrivals: Optional[bool] = None
+    show_offer_cards: Optional[bool] = None
+    show_bank_offers: Optional[bool] = None
+    show_view_store: Optional[bool] = None
+    show_footer: Optional[bool] = None
+
+# ============== HERO BANNER MODELS ==============
+class HeroBanner(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    subtitle: Optional[str] = None
+    image_url: str
+    button_text: str = "Shop Now"
+    button_link: Optional[str] = None
+    is_active: bool = True
+    display_order: int = 0
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class HeroBannerCreate(BaseModel):
+    title: str
+    subtitle: Optional[str] = None
+    image_url: str
+    button_text: str = "Shop Now"
+    button_link: Optional[str] = None
+    display_order: int = 0
+
+class HeroBannerUpdate(BaseModel):
+    title: Optional[str] = None
+    subtitle: Optional[str] = None
+    image_url: Optional[str] = None
+    button_text: Optional[str] = None
+    button_link: Optional[str] = None
+    is_active: Optional[bool] = None
+    display_order: Optional[int] = None
+
+# ============== SUPPORT SETTINGS MODELS ==============
+class SupportSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = "support_settings"
+    support_email: str = "support@blackmoney.com"
+    support_phone: str = "+91 1234567890"
+    whatsapp_number: Optional[str] = None
+    working_hours: str = "Mon-Sat: 10 AM - 6 PM"
+    support_address: Optional[str] = None
+    faq_enabled: bool = True
+    live_chat_enabled: bool = False
+    ticket_system_enabled: bool = True
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class SupportSettingsUpdate(BaseModel):
+    support_email: Optional[str] = None
+    support_phone: Optional[str] = None
+    whatsapp_number: Optional[str] = None
+    working_hours: Optional[str] = None
+    support_address: Optional[str] = None
+    faq_enabled: Optional[bool] = None
+    live_chat_enabled: Optional[bool] = None
+    ticket_system_enabled: Optional[bool] = None
+
 # ============== AUTH HELPERS ==============
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
