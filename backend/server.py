@@ -2235,26 +2235,18 @@ async def register_delivery_partner(
     user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))
 ):
     """Admin creates delivery partner account"""
-    # Create user account
-    user_create = UserCreate(
-        email=partner_data.email,
-        password=password,
-        name=partner_data.company_name,
-        phone=partner_data.contact_number,
-        role=UserRole.CUSTOMER  # Using customer role, can add delivery_partner role later
-    )
-    
     # Check if email exists
-    existing = await db.users.find_one({"email": user_create.email})
+    existing = await db.users.find_one({"email": partner_data.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
+    # Create user account with delivery_partner role
     new_user = User(
-        email=user_create.email,
+        email=partner_data.email,
         password_hash=hash_password(password),
-        name=user_create.name,
-        phone=user_create.phone,
-        role=user_create.role
+        name=partner_data.company_name,
+        phone=partner_data.contact_number,
+        role=UserRole.DELIVERY_PARTNER
     )
     await db.users.insert_one(new_user.model_dump())
     
