@@ -288,6 +288,39 @@ async def seed_database():
     await db.inventory.insert_many(inventory_items)
     print(f"✅ Created inventory for all products")
     
+    # Create warehouses for sellers
+    warehouses = [
+        {
+            "id": str(uuid.uuid4()),
+            "seller_id": seller1_id,
+            "name": "Main Warehouse",
+            "address_line": "123 Fashion Street",
+            "city": "Mumbai",
+            "state": "Maharashtra",
+            "pincode": "400001",
+            "phone": "9876543210",
+            "is_default": True,
+            "is_active": True,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "seller_id": seller2_id,
+            "name": "Tech Hub Warehouse",
+            "address_line": "456 Tech Park",
+            "city": "Bangalore",
+            "state": "Karnataka",
+            "pincode": "560001",
+            "phone": "9876543211",
+            "is_default": True,
+            "is_active": True,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+    ]
+    
+    await db.warehouses.insert_many(warehouses)
+    print(f"✅ Created {len(warehouses)} warehouses")
+    
     client.close()
     print("\n🎉 Database seeding completed successfully!")
     print("\n📋 Test Accounts:")
