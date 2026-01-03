@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import CustomerPortal from "@/pages/CustomerPortal";
 import SellerDashboard from "@/pages/SellerDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
+import DeliveryPartnerDashboard from "@/pages/DeliveryPartnerDashboard";
 import AuthPage from "@/pages/AuthPage";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 
@@ -31,6 +32,7 @@ function AppRoutes() {
         user ? (
           user.role === 'admin' ? <Navigate to="/admin" /> :
           user.role === 'seller' ? <Navigate to="/seller" /> :
+          user.role === 'delivery_partner' ? <Navigate to="/delivery" /> :
           <CustomerPortal />
         ) : <CustomerPortal />
       } />
@@ -43,6 +45,11 @@ function AppRoutes() {
       <Route path="/admin/*" element={
         <PrivateRoute allowedRoles={['admin']}>
           <AdminDashboard />
+        </PrivateRoute>
+      } />
+      <Route path="/delivery/*" element={
+        <PrivateRoute allowedRoles={['delivery_partner']}>
+          <DeliveryPartnerDashboard />
         </PrivateRoute>
       } />
     </Routes>
