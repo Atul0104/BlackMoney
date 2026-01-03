@@ -137,7 +137,9 @@ export default function ProfilePage() {
     if (!window.confirm('Are you sure you want to delete this address?')) return;
     
     try {
-      await axios.delete(`${API_URL}/addresses/${addressId}`);
+      await axios.delete(`${API_URL}/addresses/${addressId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success('Address deleted');
       fetchAddresses();
     } catch (error) {
@@ -147,7 +149,9 @@ export default function ProfilePage() {
 
   const handleSetDefault = async (addressId) => {
     try {
-      await axios.put(`${API_URL}/addresses/${addressId}/default`);
+      await axios.put(`${API_URL}/addresses/${addressId}/default`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success('Default address updated');
       fetchAddresses();
     } catch (error) {
