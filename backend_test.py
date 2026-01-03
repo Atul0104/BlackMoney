@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Backend API Testing Script for Ecommerce Platform
-Tests Platform Settings API and Addresses API
+Tests Enhanced Notification System, User Registration Auto-Notifications, 
+Return Policy Seller Endpoint, Admin Get Users, and Delivery Status APIs
 """
 
 import requests
@@ -9,6 +10,7 @@ import json
 import sys
 import os
 from datetime import datetime
+import time
 
 # Get backend URL from environment
 BACKEND_URL = "https://cart-duplication-fix.preview.emergentagent.com/api"
@@ -18,7 +20,10 @@ class BackendTester:
         self.base_url = BACKEND_URL
         self.customer_token = None
         self.admin_token = None
+        self.seller_token = None
         self.test_results = []
+        self.test_customer_id = None
+        self.test_seller_id = None
         
     def log_result(self, test_name, success, message, response_data=None):
         """Log test result"""
