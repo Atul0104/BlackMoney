@@ -121,6 +121,9 @@ backend:
       - working: true
         agent: "main"
         comment: "GST percentage API already exists and working at /api/platform-settings and /api/admin/platform-settings"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Platform Settings API fully functional. GET /api/platform-settings returns platform settings with gst_percentage (no auth required). PUT /api/admin/platform-settings allows admin to update gst_percentage (requires admin auth). Fixed datetime serialization issue during testing. Both endpoints working correctly."
 
   - task: "Addresses API"
     implemented: true
