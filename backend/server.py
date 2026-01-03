@@ -2822,6 +2822,24 @@ async def get_payment_status(
     }
 
 # ============== RETURN/CANCEL ORDER APIS ==============
+@api_router.get("/return-policy/seller")
+async def get_seller_own_return_policy(user: Dict[str, Any] = Depends(require_role([UserRole.SELLER]))):
+    """Get seller's own return/replacement policy"""
+    seller = await db.sellers.find_one({"user_id": user["id"]})
+    if not seller:
+        raise HTTPException(status_code=404, detail="Seller profile not found")
+    
+    policy = await db.return_policies.find_one({"seller_id": seller["id"]}, {"_id": 0})
+    if not policy:
+        policy = ReturnPolicy(seller_id=seller["id"]).model_dump()
+        # Convert datetime to ISO string
+        if "updated_at" in policy and hasattr(policy["updated_at"], "isoformat"):
+            policy["updated_at"] = policy["updated_at"].isoformat()
+    else:
+        if "updated_at" in policy and hasattr(policy["updated_at"], "isoformat"):
+            policy["updated_at"] = policy["updated_at"].isoformat()
+    return policy
+
 @api_router.get("/return-policy/{seller_id}")
 async def get_return_policy(seller_id: str):
     """Get seller's return/replacement policy"""
