@@ -38,10 +38,10 @@ function DashboardHeader({ user, logout, navigate, title, subtitle }) {
     { divider: true, label: 'Store', icon: Store, iconColor: 'text-violet-500' },
     { icon: Store, label: 'Store Management', path: '/seller/store', color: 'text-violet-600' },
     { icon: Warehouse, label: 'Warehouses', path: '/seller/warehouses', color: 'text-orange-600' },
-    { icon: RotateCcw, label: 'Return Policy', path: '/seller/returns', color: 'text-red-600' },
+    { icon: RotateCcw, label: 'Return Policy', path: '/seller/return-policy', color: 'text-red-600' },
     { divider: true, label: 'Account', icon: Shield, iconColor: 'text-teal-500' },
     { icon: TrendingUp, label: 'Performance', path: '/seller/performance', color: 'text-blue-500' },
-    { icon: Shield, label: 'Verification', path: '/seller/verification', color: 'text-teal-600' },
+    { icon: Shield, label: 'Verification', path: '/seller/business-verification', color: 'text-teal-600' },
   ];
 
   return (
