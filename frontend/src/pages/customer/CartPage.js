@@ -75,7 +75,7 @@ export default function CartPage() {
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-4">
               {cart.map((item) => (
-                <Card key={item.product_id} data-testid={`cart-item-${item.product_id}`}>
+                <Card key={getCartItemKey(item)} data-testid={`cart-item-${getCartItemKey(item)}`}>
                   <CardContent className="p-4">
                     <div className="flex gap-4">
                       <div className="w-24 h-24 bg-gray-100 rounded flex-shrink-0 overflow-hidden">
@@ -88,14 +88,22 @@ export default function CartPage() {
                       
                       <div className="flex-1">
                         <h3 className="font-semibold mb-1">{item.name}</h3>
+                        {/* Display size and color if available */}
+                        {(item.size || item.color) && (
+                          <p className="text-sm text-gray-500 mb-1">
+                            {item.size && <span>Size: {item.size}</span>}
+                            {item.size && item.color && <span> | </span>}
+                            {item.color && <span>Color: {item.color}</span>}
+                          </p>
+                        )}
                         <p className="text-lg font-bold mb-2">₹{item.price}</p>
                         
                         <div className="flex items-center gap-2">
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => updateQuantity(item.product_id, -1)}
-                            data-testid={`decrease-qty-${item.product_id}`}
+                            onClick={() => updateQuantity(item.product_id, item.size, item.color, -1)}
+                            data-testid={`decrease-qty-${getCartItemKey(item)}`}
                           >
                             <Minus className="w-4 h-4" />
                           </Button>
@@ -103,8 +111,8 @@ export default function CartPage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => updateQuantity(item.product_id, 1)}
-                            data-testid={`increase-qty-${item.product_id}`}
+                            onClick={() => updateQuantity(item.product_id, item.size, item.color, 1)}
+                            data-testid={`increase-qty-${getCartItemKey(item)}`}
                           >
                             <Plus className="w-4 h-4" />
                           </Button>
@@ -114,8 +122,8 @@ export default function CartPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => removeItem(item.product_id)}
-                        data-testid={`remove-item-${item.product_id}`}
+                        onClick={() => removeItem(item.product_id, item.size, item.color)}
+                        data-testid={`remove-item-${getCartItemKey(item)}`}
                       >
                         <Trash2 className="w-5 h-5 text-red-500" />
                       </Button>
