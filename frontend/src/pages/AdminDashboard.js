@@ -87,52 +87,6 @@ function AdminHeader({ user, logout, navigate }) {
                     className="w-full justify-start gap-3"
                     onClick={() => { navigate('/admin/tickets'); setMenuOpen(false); }}
                   >
-                    <Ticket className="w-5 h-5" />
-                    <span>Support Tickets</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3"
-                    onClick={() => { navigate('/admin/offers'); setMenuOpen(false); }}
-                  >
-                    <Tag className="w-5 h-5" />
-                    <span>Offer Cards</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3"
-                    onClick={() => { navigate('/admin/bank-offers'); setMenuOpen(false); }}
-                  >
-                    <CreditCard className="w-5 h-5" />
-                    <span>Bank Offers</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3"
-                    onClick={() => { navigate('/admin/footer'); setMenuOpen(false); }}
-                  >
-                    <Settings className="w-5 h-5" />
-                    <span>Footer Settings</span>
-                  </Button>
-                  <div className="border-t my-2"></div>
-                  <p className="text-xs text-gray-500 px-3 py-1 font-semibold">PLATFORM</p>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3"
-                    onClick={() => { navigate('/admin/settings'); setMenuOpen(false); }}
-                  >
-                    <Settings className="w-5 h-5" />
-                    <span>Platform Settings</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3"
-                    onClick={() => { navigate('/admin/payouts'); setMenuOpen(false); }}
-                  >
-                    <CreditCard className="w-5 h-5" />
-                    <span>Seller Payouts</span>
-                  </Button>
-                </div>
               </SheetContent>
             </Sheet>
             
