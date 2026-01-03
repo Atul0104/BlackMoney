@@ -88,6 +88,14 @@ function DashboardHeader({ user, logout, navigate, title, subtitle }) {
                     <TrendingUp className="w-5 h-5" />
                     <span>Analytics</span>
                   </Button>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3"
+                    onClick={() => { navigate('/seller/payouts'); setMenuOpen(false); }}
+                  >
+                    <Wallet className="w-5 h-5" />
+                    <span>Payouts</span>
+                  </Button>
                   <div className="border-t my-2"></div>
                   <p className="text-xs text-gray-500 px-3 py-1 font-semibold">BUSINESS SETTINGS</p>
                   <Button
