@@ -283,85 +283,100 @@ export default function OrdersManagement() {
             <DialogTitle>Generate Shipping Label</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Select Warehouse *</label>
-              <Select
-                value={labelData.warehouse_id}
-                onValueChange={(value) => setLabelData({ ...labelData, warehouse_id: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose pickup location" />
-                </SelectTrigger>
-                <SelectContent>
-                  {warehouses.map((warehouse) => (
-                    <SelectItem key={warehouse.id} value={warehouse.id}>
-                      {warehouse.name} - {warehouse.city}
-                      {warehouse.is_default && ' (Default)'}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {warehouses.length === 0 ? (
+              <div className="text-center py-6">
+                <Package className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-600 mb-2">No warehouse found</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  You need to create a warehouse first to generate shipping labels
+                </p>
+                <Button onClick={() => { setShowLabelDialog(false); navigate('/seller/warehouses'); }}>
+                  Create Warehouse
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Select Warehouse *</label>
+                  <Select
+                    value={labelData.warehouse_id}
+                    onValueChange={(value) => setLabelData({ ...labelData, warehouse_id: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose pickup location" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {warehouses.map((warehouse) => (
+                        <SelectItem key={warehouse.id} value={warehouse.id}>
+                          {warehouse.name} - {warehouse.city}
+                          {warehouse.is_default && ' (Default)'}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">Delivery Partner (Optional)</label>
-              <Select
-                value={labelData.delivery_partner_id}
-                onValueChange={(value) => setLabelData({ ...labelData, delivery_partner_id: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose delivery partner or leave empty" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">None (Self-shipping)</SelectItem>
-                  {deliveryPartners.map((partner) => (
-                    <SelectItem key={partner.id} value={partner.id}>
-                      <div className="flex items-center gap-2">
-                        <Truck className="w-4 h-4" />
-                        {partner.company_name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Delivery Partner (Optional)</label>
+                  <Select
+                    value={labelData.delivery_partner_id}
+                    onValueChange={(value) => setLabelData({ ...labelData, delivery_partner_id: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose delivery partner or leave empty" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">None (Self-shipping)</SelectItem>
+                      {deliveryPartners.map((partner) => (
+                        <SelectItem key={partner.id} value={partner.id}>
+                          <div className="flex items-center gap-2">
+                            <Truck className="w-4 h-4" />
+                            {partner.company_name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">Package Weight (kg)</label>
-              <input
-                type="number"
-                step="0.1"
-                value={labelData.weight}
-                onChange={(e) => setLabelData({ ...labelData, weight: e.target.value })}
-                placeholder="e.g., 2.5"
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Package Weight (kg)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={labelData.weight}
+                    onChange={(e) => setLabelData({ ...labelData, weight: e.target.value })}
+                    placeholder="e.g., 2.5"
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                </div>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">Dimensions (LxWxH cm)</label>
-              <input
-                type="text"
-                value={labelData.dimensions}
-                onChange={(e) => setLabelData({ ...labelData, dimensions: e.target.value })}
-                placeholder="e.g., 30x20x10"
-                className="w-full px-3 py-2 border rounded-md"
-              />
-            </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Dimensions (LxWxH cm)</label>
+                  <input
+                    type="text"
+                    value={labelData.dimensions}
+                    onChange={(e) => setLabelData({ ...labelData, dimensions: e.target.value })}
+                    placeholder="e.g., 30x20x10"
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                </div>
 
-            <div className="bg-blue-50 p-3 rounded-lg text-sm">
-              <p className="font-semibold mb-1">What happens next?</p>
-              <ul className="space-y-1 text-gray-600">
-                <li>• Unique tracking ID and barcode will be generated</li>
-                <li>• Order details will be sent to delivery partner</li>
-                <li>• Shipping label can be downloaded and printed</li>
-                <li>• Customer will receive tracking information</li>
-              </ul>
-            </div>
+                <div className="bg-blue-50 p-3 rounded-lg text-sm">
+                  <p className="font-semibold mb-1">What happens next?</p>
+                  <ul className="space-y-1 text-gray-600">
+                    <li>• Unique tracking ID and barcode will be generated</li>
+                    <li>• Order details will be sent to delivery partner</li>
+                    <li>• Shipping label can be downloaded and printed</li>
+                    <li>• Customer will receive tracking information</li>
+                  </ul>
+                </div>
 
-            <Button onClick={generateShippingLabel} className="w-full">
-              Generate Label & Barcode
-            </Button>
+                <Button onClick={generateShippingLabel} className="w-full">
+                  Generate Label & Barcode
+                </Button>
+              </>
+            )}
           </div>
         </DialogContent>
       </Dialog>
