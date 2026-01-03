@@ -281,7 +281,7 @@ function AdminHome() {
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <Button
                 onClick={() => navigate('/admin/sellers')}
                 className="w-full justify-start"
@@ -296,6 +296,54 @@ function AdminHome() {
                 data-testid="quick-send-notification"
               >
                 <Bell className="w-4 h-4 mr-2" /> Send Notification
+              </Button>
+              <Button
+                onClick={() => navigate('/admin/storefront')}
+                variant="outline"
+                className="w-full justify-start"
+                data-testid="quick-storefront"
+              >
+                <Eye className="w-4 h-4 mr-2" /> Visibility Control
+              </Button>
+              <Button
+                onClick={() => navigate('/admin/banners')}
+                variant="outline"
+                className="w-full justify-start"
+                data-testid="quick-banners"
+              >
+                <Image className="w-4 h-4 mr-2" /> Hero Banners
+              </Button>
+              <Button
+                onClick={() => navigate('/admin/offers')}
+                variant="outline"
+                className="w-full justify-start"
+                data-testid="quick-offers"
+              >
+                <Tag className="w-4 h-4 mr-2" /> Offer Cards
+              </Button>
+              <Button
+                onClick={() => navigate('/admin/payouts')}
+                variant="outline"
+                className="w-full justify-start"
+                data-testid="quick-payouts"
+              >
+                <CreditCard className="w-4 h-4 mr-2" /> Seller Payouts
+              </Button>
+              <Button
+                onClick={() => navigate('/admin/coupons')}
+                variant="outline"
+                className="w-full justify-start"
+                data-testid="quick-coupons"
+              >
+                <Percent className="w-4 h-4 mr-2" /> Coupons
+              </Button>
+              <Button
+                onClick={() => navigate('/admin/settings')}
+                variant="outline"
+                className="w-full justify-start"
+                data-testid="quick-settings"
+              >
+                <Settings className="w-4 h-4 mr-2" /> Platform Settings
               </Button>
             </div>
           </CardContent>
