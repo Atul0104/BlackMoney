@@ -56,6 +56,7 @@ class BackendTester:
             if response.status_code == 201 or response.status_code == 200:
                 result = response.json()
                 self.customer_token = result.get("access_token")
+                self.test_customer_id = result.get("user", {}).get("id")
                 self.log_result("Customer Registration", True, "Customer registered successfully")
                 return True
             elif response.status_code == 400 and "already registered" in response.text:
@@ -83,6 +84,7 @@ class BackendTester:
             if response.status_code == 200:
                 result = response.json()
                 self.customer_token = result.get("access_token")
+                self.test_customer_id = result.get("user", {}).get("id")
                 self.log_result("Customer Login", True, "Customer logged in successfully")
                 return True
             else:
