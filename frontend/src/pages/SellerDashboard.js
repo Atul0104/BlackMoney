@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, ShoppingBag, TrendingUp, LogOut, Plus, Settings, Home, Menu, Bell, Wallet } from 'lucide-react';
+import { Package, ShoppingBag, TrendingUp, LogOut, Plus, Settings, Home, Menu, Bell, Wallet, Store, BarChart3, Boxes, Warehouse, Shield, RotateCcw, Truck } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import SellerSetup from './seller/SellerSetup';
 import ProductsManagement from './seller/ProductsManagement';
@@ -24,6 +24,26 @@ const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 function DashboardHeader({ user, logout, navigate, title, subtitle }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const menuItems = [
+    { icon: Home, label: 'Home', path: '/', color: 'text-blue-600' },
+    { icon: TrendingUp, label: 'Dashboard', path: '/seller', color: 'text-purple-600' },
+    { divider: true, label: 'Products' },
+    { icon: Package, label: 'Products', path: '/seller/products', color: 'text-indigo-600' },
+    { icon: Plus, label: 'Add Product', path: '/seller/products/add', color: 'text-green-600' },
+    { icon: Boxes, label: 'Inventory', path: '/seller/inventory', color: 'text-amber-600' },
+    { divider: true, label: 'Orders & Payments' },
+    { icon: ShoppingBag, label: 'Orders', path: '/seller/orders', color: 'text-pink-600' },
+    { icon: Wallet, label: 'Payouts', path: '/seller/payouts', color: 'text-emerald-600' },
+    { icon: BarChart3, label: 'Analytics', path: '/seller/analytics', color: 'text-cyan-600' },
+    { divider: true, label: 'Store' },
+    { icon: Store, label: 'Store Management', path: '/seller/store', color: 'text-violet-600' },
+    { icon: Warehouse, label: 'Warehouses', path: '/seller/warehouses', color: 'text-orange-600' },
+    { icon: RotateCcw, label: 'Return Policy', path: '/seller/returns', color: 'text-red-600' },
+    { divider: true, label: 'Account' },
+    { icon: TrendingUp, label: 'Performance', path: '/seller/performance', color: 'text-blue-500' },
+    { icon: Shield, label: 'Verification', path: '/seller/verification', color: 'text-teal-600' },
+  ];
+
   return (
     <header className="bg-white border-b sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-3">
@@ -35,19 +55,31 @@ function DashboardHeader({ user, logout, navigate, title, subtitle }) {
                   <Menu />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left">
+              <SheetContent side="left" className="w-72 overflow-hidden flex flex-col">
                 <SheetHeader>
-                  <SheetTitle>Menu</SheetTitle>
+                  <SheetTitle className="text-left">Seller Menu</SheetTitle>
                 </SheetHeader>
-                <div className="mt-6 space-y-2">
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3"
-                    onClick={() => { navigate('/'); setMenuOpen(false); }}
-                  >
-                    <Home className="w-5 h-5" />
-                    <span>Home</span>
-                  </Button>
+                <div className="mt-4 flex-1 overflow-y-auto space-y-1 pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+                  {menuItems.map((item, idx) => 
+                    item.divider ? (
+                      <div key={idx} className="pt-4 pb-2 px-3">
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{item.label}</p>
+                      </div>
+                    ) : (
+                      <Button
+                        key={idx}
+                        variant="ghost"
+                        className="w-full justify-start gap-3 hover:bg-gray-100"
+                        onClick={() => { navigate(item.path); setMenuOpen(false); }}
+                      >
+                        <item.icon className={`w-5 h-5 ${item.color}`} />
+                        <span>{item.label}</span>
+                      </Button>
+                    )
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
                   <Button
                     variant="ghost"
                     className="w-full justify-start gap-3"
