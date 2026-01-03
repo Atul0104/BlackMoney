@@ -101,3 +101,103 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  Multi-seller ecommerce platform fixes:
+  1. GST percentage can be edited by admin (feature already exists, verified working)
+  2. Saved addresses not showing at checkout - FIXED (AuthContext wasn't exposing token)
+  3. Unable to add new address during checkout - FIXED (token issue resolved)
+  4. Cart item cancellation bug - when same item added twice with different sizes, removing one removes both - FIXED (now uses product_id + size + color as unique key)
+
+backend:
+  - task: "Platform Settings API - GST percentage"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "GST percentage API already exists and working at /api/platform-settings and /api/admin/platform-settings"
+
+  - task: "Addresses API"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Backend API exists at /api/addresses - GET, POST, PUT, DELETE"
+
+frontend:
+  - task: "Cart Item Management with Size/Color"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/customer/CartPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Fixed cart to use product_id + size + color as unique key. Items with different sizes are now treated separately."
+
+  - task: "Checkout Address Loading"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/customer/CheckoutPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Fixed AuthContext to expose token. Added loading states and better error handling."
+
+  - task: "Add New Address During Checkout"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/customer/CheckoutPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Fixed token access issue. Added saving state and better error handling."
+
+  - task: "AuthContext Token Exposure"
+    implemented: true
+    working: true
+    file: "frontend/src/contexts/AuthContext.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added token state to AuthContext and exposed it via Provider"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Addresses API"
+    - "Cart Item Management"
+    - "Checkout Address Loading"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Fixed 3 issues: 1) Cart item removal now uses product_id+size+color as unique key, 2) AuthContext now exposes token for API calls, 3) Added better error handling and loading states for checkout addresses. Please test: a) Adding same product with different sizes to cart and removing one, b) Viewing saved addresses at checkout, c) Adding new address during checkout"
