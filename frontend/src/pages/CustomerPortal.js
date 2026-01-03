@@ -489,17 +489,50 @@ function HomePage() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-80">
-                    <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                    <DropdownMenuLabel className="flex justify-between items-center">
+                      <span>Notifications</span>
+                      {unreadNotifications > 0 && (
+                        <span className="text-xs text-blue-600">{unreadNotifications} new</span>
+                      )}
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     {notifications.length === 0 ? (
                       <div className="p-4 text-center text-gray-500">No notifications</div>
                     ) : (
                       notifications.slice(0, 5).map((notif) => (
-                        <DropdownMenuItem key={notif.id} className="flex flex-col items-start p-3">
-                          <p className={`font-medium ${!notif.is_read ? 'text-blue-600' : ''}`}>{notif.title}</p>
-                          <p className="text-sm text-gray-500 truncate w-full">{notif.message}</p>
+                        <DropdownMenuItem 
+                          key={notif.id} 
+                          className={`flex flex-col items-start p-3 cursor-pointer ${!notif.is_read ? 'bg-blue-50' : ''}`}
+                          onClick={() => handleNotificationClick(notif)}
+                        >
+                          <div className="flex items-start gap-2 w-full">
+                            {!notif.is_read && (
+                              <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0" />
+                            )}
+                            <div className="flex-1">
+                              <p className={`font-medium ${!notif.is_read ? 'text-blue-600' : ''}`}>{notif.title}</p>
+                              <p className="text-sm text-gray-500 truncate w-full">{notif.message}</p>
+                              {notif.link_url && (
+                                <p className="text-xs text-blue-500 mt-1">Click to view →</p>
+                              )}
+                            </div>
+                          </div>
                         </DropdownMenuItem>
                       ))
+                    )}
+                    {notifications.length > 5 && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          className="text-center text-blue-600 cursor-pointer"
+                          onClick={() => {
+                            setShowNotifications(false);
+                            navigate('/customer/notifications');
+                          }}
+                        >
+                          View all notifications
+                        </DropdownMenuItem>
+                      </>
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
