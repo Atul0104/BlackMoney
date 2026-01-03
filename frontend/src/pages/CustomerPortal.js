@@ -346,10 +346,6 @@ function HomePage() {
       console.error('Error fetching bestsellers:', error);
     }
   };
-    } catch (error) {
-      console.error('Error fetching most viewed:', error);
-    }
-  };
 
   const fetchCategories = async () => {
     try {
