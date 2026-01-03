@@ -249,6 +249,20 @@ function HomePage() {
   const [tickerMessage, setTickerMessage] = useState('');
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [visibility, setVisibility] = useState({
+    show_hero_banner: true,
+    show_ticker: true,
+    show_categories: true,
+    show_most_viewed: true,
+    show_trending: true,
+    show_bestsellers: true,
+    show_new_arrivals: true,
+    show_offer_cards: true,
+    show_bank_offers: true,
+    show_view_store: true,
+    show_footer: true
+  });
+  const [bestsellers, setBestsellers] = useState([]);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
