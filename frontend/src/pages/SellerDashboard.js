@@ -16,6 +16,7 @@ import BusinessVerification from './seller/BusinessVerification';
 import SellerPerformance from './seller/SellerPerformance';
 import ReturnPolicySettings from './seller/ReturnPolicySettings';
 import StoreManagement from './seller/StoreManagement';
+import PayoutHistory from './seller/PayoutHistory';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
