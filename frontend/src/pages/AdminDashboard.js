@@ -81,14 +81,6 @@ function AdminHeader({ user, logout, navigate }) {
                 </div>
               </SheetContent>
             </Sheet>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3"
-                    onClick={() => { navigate('/admin/tickets'); setMenuOpen(false); }}
-                  >
-              </SheetContent>
-            </Sheet>
             
             <div
               className="flex items-center gap-2 cursor-pointer"
