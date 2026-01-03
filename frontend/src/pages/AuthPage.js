@@ -87,7 +87,7 @@ export default function AuthPage() {
             
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 space-y-2">
               <p className="font-semibold text-lg">🛒 Customer</p>
-              <p className="font-mono text-sm">customer1@example.com</p>
+              <p className="font-mono text-sm">customer@example.com</p>
               <p className="font-mono text-sm">customer123</p>
             </div>
 
