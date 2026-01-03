@@ -210,11 +210,14 @@ frontend:
     file: "frontend/src/pages/admin/BroadcastNotifications.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Completely rewrote with recipient selection (All/By Role/Specific Users), user search, and role checkboxes."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Admin notification system working perfectly. Role selection (By Role) works, checkboxes for Customer/Seller/Delivery Partner/Admin are clickable and selectable. Form fields accept input and submission works. UI is fully functional at /admin/notifications."
 
   - task: "Seller Return Policy Fix"
     implemented: true
