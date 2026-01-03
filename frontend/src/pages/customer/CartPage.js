@@ -141,7 +141,7 @@ export default function CartPage() {
                   
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between">
-                      <span>Subtotal ({cart.length} items)</span>
+                      <span>Subtotal ({totalItems} items)</span>
                       <span>₹{total.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
