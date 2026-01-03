@@ -32,7 +32,7 @@ export default function OrdersManagement() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showLabelDialog, setShowLabelDialog] = useState(false);
   const [labelData, setLabelData] = useState({
-    delivery_partner_id: '',
+    delivery_partner_id: 'none',
     warehouse_id: '',
     weight: '',
     dimensions: ''
