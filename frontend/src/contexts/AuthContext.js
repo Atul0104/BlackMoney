@@ -7,15 +7,17 @@ const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const savedToken = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
     
-    if (token && savedUser) {
+    if (savedToken && savedUser) {
       setUser(JSON.parse(savedUser));
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      setToken(savedToken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
     }
     setLoading(false);
   }, []);
@@ -30,6 +32,7 @@ export function AuthProvider({ children }) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
       
       setUser(userData);
+      setToken(access_token);
       return { success: true };
     } catch (error) {
       return { success: false, error: error.response?.data?.detail || 'Login failed' };
@@ -52,6 +55,7 @@ export function AuthProvider({ children }) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
       
       setUser(userData);
+      setToken(access_token);
       return { success: true };
     } catch (error) {
       return { success: false, error: error.response?.data?.detail || 'Registration failed' };
@@ -63,6 +67,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('user');
     delete axios.defaults.headers.common['Authorization'];
     setUser(null);
+    setToken(null);
   };
 
   if (loading) {
@@ -70,7 +75,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, token, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
