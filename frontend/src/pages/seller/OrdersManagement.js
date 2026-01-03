@@ -109,7 +109,7 @@ export default function OrdersManagement() {
       
       // Reset form
       setLabelData({
-        delivery_partner_id: '',
+        delivery_partner_id: 'none',
         warehouse_id: '',
         weight: '',
         dimensions: ''
