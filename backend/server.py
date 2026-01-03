@@ -46,6 +46,7 @@ class UserRole(str, Enum):
     ADMIN = "admin"
     SELLER = "seller"
     CUSTOMER = "customer"
+    DELIVERY_PARTNER = "delivery_partner"
 
 class OrderStatus(str, Enum):
     PENDING = "pending"
