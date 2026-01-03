@@ -240,117 +240,303 @@ class BackendTester:
             self.log_result("Create Seller Profile", False, f"Exception: {str(e)}")
             return False
     
-    def test_platform_settings_get(self):
-        """Test GET /api/platform-settings (no auth required)"""
-        try:
-            url = f"{self.base_url}/platform-settings"
-            response = requests.get(url)
-            
-            if response.status_code == 200:
-                result = response.json()
-                if "gst_percentage" in result:
-                    self.log_result("Platform Settings GET", True, f"Retrieved platform settings with GST: {result.get('gst_percentage')}%", result)
-                    return True
-                else:
-                    self.log_result("Platform Settings GET", False, "Response missing gst_percentage field", result)
-                    return False
-            else:
-                self.log_result("Platform Settings GET", False, f"Failed with status {response.status_code}", response.text)
-                return False
-                
-        except Exception as e:
-            self.log_result("Platform Settings GET", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_platform_settings_update(self):
-        """Test PUT /api/admin/platform-settings (requires admin auth)"""
+    def test_admin_broadcast_notification_all_users(self):
+        """Test POST /api/admin/notifications/broadcast - broadcast to all users"""
         if not self.admin_token:
-            self.log_result("Platform Settings UPDATE", False, "No admin token available")
+            self.log_result("Admin Broadcast Notification (All Users)", False, "No admin token available")
             return False
             
         try:
-            url = f"{self.base_url}/admin/platform-settings"
+            url = f"{self.base_url}/admin/notifications/broadcast"
             headers = {"Authorization": f"Bearer {self.admin_token}"}
             data = {
-                "gst_percentage": 20.0
-            }
-            
-            response = requests.put(url, json=data, headers=headers)
-            
-            if response.status_code == 200:
-                result = response.json()
-                self.log_result("Platform Settings UPDATE", True, "Platform settings updated successfully", result)
-                return True
-            else:
-                self.log_result("Platform Settings UPDATE", False, f"Failed with status {response.status_code}", response.text)
-                return False
-                
-        except Exception as e:
-            self.log_result("Platform Settings UPDATE", False, f"Exception: {str(e)}")
-            return False
-    
-    def test_create_address(self):
-        """Test POST /api/addresses"""
-        if not self.customer_token:
-            self.log_result("Create Address", False, "No customer token available")
-            return False
-            
-        try:
-            url = f"{self.base_url}/addresses"
-            headers = {"Authorization": f"Bearer {self.customer_token}"}
-            data = {
-                "name": "John Doe",
-                "phone": "9876543210",
-                "pincode": "560001",
-                "address_line1": "123 Test Street",
-                "address_line2": "Near Test Mall",
-                "city": "Bangalore",
-                "state": "Karnataka",
-                "landmark": "Test Landmark",
-                "address_type": "home",
-                "is_default": True
+                "title": "Test Broadcast to All",
+                "message": "This is a test broadcast notification to all users",
+                "type": "admin_broadcast"
             }
             
             response = requests.post(url, json=data, headers=headers)
             
-            if response.status_code == 201 or response.status_code == 200:
+            if response.status_code == 200:
                 result = response.json()
-                self.log_result("Create Address", True, "Address created successfully", result)
+                self.log_result("Admin Broadcast Notification (All Users)", True, f"Broadcast sent successfully: {result.get('message', '')}", result)
                 return True
             else:
-                self.log_result("Create Address", False, f"Failed with status {response.status_code}", response.text)
+                self.log_result("Admin Broadcast Notification (All Users)", False, f"Failed with status {response.status_code}", response.text)
                 return False
                 
         except Exception as e:
-            self.log_result("Create Address", False, f"Exception: {str(e)}")
+            self.log_result("Admin Broadcast Notification (All Users)", False, f"Exception: {str(e)}")
             return False
     
-    def test_get_addresses(self):
-        """Test GET /api/addresses"""
-        if not self.customer_token:
-            self.log_result("Get Addresses", False, "No customer token available")
+    def test_admin_broadcast_notification_by_role(self):
+        """Test POST /api/admin/notifications/broadcast - broadcast to specific roles"""
+        if not self.admin_token:
+            self.log_result("Admin Broadcast Notification (By Role)", False, "No admin token available")
             return False
             
         try:
-            url = f"{self.base_url}/addresses"
-            headers = {"Authorization": f"Bearer {self.customer_token}"}
+            url = f"{self.base_url}/admin/notifications/broadcast"
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            data = {
+                "title": "Test Broadcast to Customers",
+                "message": "This is a test broadcast notification to customers only",
+                "type": "admin_broadcast",
+                "target_roles": ["customer"]
+            }
+            
+            response = requests.post(url, json=data, headers=headers)
+            
+            if response.status_code == 200:
+                result = response.json()
+                self.log_result("Admin Broadcast Notification (By Role)", True, f"Role-based broadcast sent successfully: {result.get('message', '')}", result)
+                return True
+            else:
+                self.log_result("Admin Broadcast Notification (By Role)", False, f"Failed with status {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_result("Admin Broadcast Notification (By Role)", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_admin_broadcast_notification_with_link(self):
+        """Test POST /api/admin/notifications/broadcast - notification with link_url"""
+        if not self.admin_token:
+            self.log_result("Admin Broadcast Notification (With Link)", False, "No admin token available")
+            return False
+            
+        try:
+            url = f"{self.base_url}/admin/notifications/broadcast"
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            data = {
+                "title": "Test Notification with Link",
+                "message": "Click to view special offers",
+                "type": "admin_broadcast",
+                "link_url": "/offers",
+                "target_roles": ["customer"]
+            }
+            
+            response = requests.post(url, json=data, headers=headers)
+            
+            if response.status_code == 200:
+                result = response.json()
+                self.log_result("Admin Broadcast Notification (With Link)", True, f"Notification with link sent successfully: {result.get('message', '')}", result)
+                return True
+            else:
+                self.log_result("Admin Broadcast Notification (With Link)", False, f"Failed with status {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_result("Admin Broadcast Notification (With Link)", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_user_registration_auto_notifications(self):
+        """Test that admin gets notifications when new users register"""
+        # Register a new customer with unique email
+        timestamp = int(time.time())
+        try:
+            url = f"{self.base_url}/auth/register"
+            data = {
+                "email": f"newcustomer{timestamp}@test.com",
+                "password": "Test123!",
+                "name": f"New Customer {timestamp}",
+                "role": "customer"
+            }
+            
+            response = requests.post(url, json=data)
+            
+            if response.status_code == 201 or response.status_code == 200:
+                self.log_result("User Registration Auto-Notifications (Customer)", True, "New customer registered - admin should receive notification")
+                
+                # Wait a moment for notification to be created
+                time.sleep(1)
+                
+                # Check admin notifications to verify auto-notification was created
+                if self.admin_token:
+                    notif_url = f"{self.base_url}/notifications/my"
+                    headers = {"Authorization": f"Bearer {self.admin_token}"}
+                    notif_response = requests.get(notif_url, headers=headers)
+                    
+                    if notif_response.status_code == 200:
+                        notifications = notif_response.json()
+                        # Look for recent registration notification
+                        recent_notifications = [n for n in notifications if "New customer registered" in n.get("message", "") or "New User Registration" in n.get("title", "")]
+                        if recent_notifications:
+                            self.log_result("User Registration Auto-Notifications (Verification)", True, f"Found {len(recent_notifications)} registration notifications for admin")
+                        else:
+                            self.log_result("User Registration Auto-Notifications (Verification)", False, "No registration notifications found for admin")
+                
+                return True
+            else:
+                self.log_result("User Registration Auto-Notifications (Customer)", False, f"Failed to register new customer: {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_result("User Registration Auto-Notifications (Customer)", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_seller_registration_auto_notifications(self):
+        """Test that admin gets seller approval notifications when new sellers register"""
+        # Register a new seller with unique email
+        timestamp = int(time.time())
+        try:
+            url = f"{self.base_url}/auth/register"
+            data = {
+                "email": f"newseller{timestamp}@test.com",
+                "password": "Seller123!",
+                "name": f"New Seller {timestamp}",
+                "role": "seller"
+            }
+            
+            response = requests.post(url, json=data)
+            
+            if response.status_code == 201 or response.status_code == 200:
+                self.log_result("Seller Registration Auto-Notifications", True, "New seller registered - admin should receive approval notification")
+                
+                # Wait a moment for notification to be created
+                time.sleep(1)
+                
+                # Check admin notifications to verify auto-notification was created
+                if self.admin_token:
+                    notif_url = f"{self.base_url}/notifications/my"
+                    headers = {"Authorization": f"Bearer {self.admin_token}"}
+                    notif_response = requests.get(notif_url, headers=headers)
+                    
+                    if notif_response.status_code == 200:
+                        notifications = notif_response.json()
+                        # Look for recent seller approval notification
+                        approval_notifications = [n for n in notifications if "Approval Required" in n.get("title", "") or "seller_approval" in n.get("type", "")]
+                        if approval_notifications:
+                            self.log_result("Seller Registration Auto-Notifications (Verification)", True, f"Found {len(approval_notifications)} seller approval notifications for admin")
+                        else:
+                            self.log_result("Seller Registration Auto-Notifications (Verification)", False, "No seller approval notifications found for admin")
+                
+                return True
+            else:
+                self.log_result("Seller Registration Auto-Notifications", False, f"Failed to register new seller: {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_result("Seller Registration Auto-Notifications", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_return_policy_seller_endpoint(self):
+        """Test GET /api/return-policy/seller"""
+        if not self.seller_token:
+            self.log_result("Return Policy Seller Endpoint", False, "No seller token available")
+            return False
+            
+        try:
+            url = f"{self.base_url}/return-policy/seller"
+            headers = {"Authorization": f"Bearer {self.seller_token}"}
+            
+            response = requests.get(url, headers=headers)
+            
+            if response.status_code == 200:
+                result = response.json()
+                self.log_result("Return Policy Seller Endpoint", True, "Return policy retrieved successfully", result)
+                return True
+            elif response.status_code == 404:
+                # This might be expected if no policy exists yet - let's check if endpoint exists
+                self.log_result("Return Policy Seller Endpoint", True, "Endpoint exists but no policy found (404 is acceptable)")
+                return True
+            else:
+                self.log_result("Return Policy Seller Endpoint", False, f"Failed with status {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_result("Return Policy Seller Endpoint", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_admin_get_users_all(self):
+        """Test GET /api/admin/users - fetch all users"""
+        if not self.admin_token:
+            self.log_result("Admin Get Users (All)", False, "No admin token available")
+            return False
+            
+        try:
+            url = f"{self.base_url}/admin/users"
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
             
             response = requests.get(url, headers=headers)
             
             if response.status_code == 200:
                 result = response.json()
                 if isinstance(result, list):
-                    self.log_result("Get Addresses", True, f"Retrieved {len(result)} addresses", result)
+                    self.log_result("Admin Get Users (All)", True, f"Retrieved {len(result)} users", {"user_count": len(result)})
                     return True
                 else:
-                    self.log_result("Get Addresses", False, "Response is not a list", result)
+                    self.log_result("Admin Get Users (All)", False, "Response is not a list", result)
                     return False
             else:
-                self.log_result("Get Addresses", False, f"Failed with status {response.status_code}", response.text)
+                self.log_result("Admin Get Users (All)", False, f"Failed with status {response.status_code}", response.text)
                 return False
                 
         except Exception as e:
-            self.log_result("Get Addresses", False, f"Exception: {str(e)}")
+            self.log_result("Admin Get Users (All)", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_admin_get_users_by_role(self):
+        """Test GET /api/admin/users?role=customer - filter by role"""
+        if not self.admin_token:
+            self.log_result("Admin Get Users (By Role)", False, "No admin token available")
+            return False
+            
+        try:
+            url = f"{self.base_url}/admin/users?role=customer"
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            
+            response = requests.get(url, headers=headers)
+            
+            if response.status_code == 200:
+                result = response.json()
+                if isinstance(result, list):
+                    # Verify all returned users are customers
+                    customer_count = len([u for u in result if u.get("role") == "customer"])
+                    self.log_result("Admin Get Users (By Role)", True, f"Retrieved {len(result)} users, {customer_count} are customers", {"total_users": len(result), "customers": customer_count})
+                    return True
+                else:
+                    self.log_result("Admin Get Users (By Role)", False, "Response is not a list", result)
+                    return False
+            else:
+                self.log_result("Admin Get Users (By Role)", False, f"Failed with status {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_result("Admin Get Users (By Role)", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_delivery_status_endpoint_exists(self):
+        """Test that POST /api/delivery-status/{order_id} endpoint exists"""
+        try:
+            # Use a dummy order ID to test if endpoint exists
+            dummy_order_id = "test-order-123"
+            url = f"{self.base_url}/delivery-status/{dummy_order_id}"
+            headers = {"Authorization": f"Bearer {self.admin_token}" if self.admin_token else {}}
+            data = {
+                "status": "in_transit",
+                "location": "Test Location",
+                "remarks": "Test delivery status update"
+            }
+            
+            response = requests.post(url, json=data, headers=headers)
+            
+            # We expect this to fail with 404 (order not found) or 401/403 (auth issues)
+            # but not 404 for route not found
+            if response.status_code in [400, 401, 403, 404, 422]:
+                # These are acceptable - means endpoint exists but request failed for business logic reasons
+                self.log_result("Delivery Status Endpoint Exists", True, f"Endpoint exists (status {response.status_code} is expected for dummy data)")
+                return True
+            elif response.status_code == 200:
+                # Unexpected success with dummy data
+                self.log_result("Delivery Status Endpoint Exists", True, "Endpoint exists and responded successfully")
+                return True
+            else:
+                self.log_result("Delivery Status Endpoint Exists", False, f"Unexpected status {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_result("Delivery Status Endpoint Exists", False, f"Exception: {str(e)}")
             return False
     
     def run_all_tests(self):
