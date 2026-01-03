@@ -160,9 +160,18 @@ export default function CheckoutPage() {
       return;
     }
 
+    setSavingAddress(true);
     try {
+      // Get token from localStorage as fallback
+      const authToken = token || localStorage.getItem('token');
+      if (!authToken) {
+        toast.error('Please login again to add address');
+        setSavingAddress(false);
+        return;
+      }
+      
       const response = await axios.post(`${API_URL}/addresses`, addressForm, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${authToken}` }
       });
       toast.success('Address added successfully');
       setShowNewAddressDialog(false);
@@ -181,7 +190,10 @@ export default function CheckoutPage() {
       await fetchSavedAddresses();
       setSelectedAddressId(response.data.id);
     } catch (error) {
-      toast.error('Failed to add address');
+      console.error('Error adding address:', error);
+      toast.error(error.response?.data?.detail || 'Failed to add address');
+    } finally {
+      setSavingAddress(false);
     }
   };
 
