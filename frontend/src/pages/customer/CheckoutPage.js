@@ -835,8 +835,10 @@ export default function CheckoutPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowNewAddressDialog(false)}>Cancel</Button>
-            <Button onClick={handleAddNewAddress}>Add Address</Button>
+            <Button variant="outline" onClick={() => setShowNewAddressDialog(false)} disabled={savingAddress}>Cancel</Button>
+            <Button onClick={handleAddNewAddress} disabled={savingAddress}>
+              {savingAddress ? 'Adding...' : 'Add Address'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
