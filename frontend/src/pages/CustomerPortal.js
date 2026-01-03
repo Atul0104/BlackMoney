@@ -278,6 +278,8 @@ function HomePage() {
     fetchMostViewed();
     fetchCategories();
     fetchTicker();
+    fetchVisibility();
+    fetchBestsellers();
     loadCart();
     if (user) {
       fetchNotifications();
