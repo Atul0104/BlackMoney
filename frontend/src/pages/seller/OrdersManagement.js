@@ -326,7 +326,7 @@ export default function OrdersManagement() {
                       <SelectValue placeholder="Choose delivery partner or leave empty" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">None (Self-shipping)</SelectItem>
+                      <SelectItem value="none">None (Self-shipping)</SelectItem>
                       {deliveryPartners.map((partner) => (
                         <SelectItem key={partner.id} value={partner.id}>
                           <div className="flex items-center gap-2">
