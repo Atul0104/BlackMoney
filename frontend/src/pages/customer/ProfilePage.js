@@ -77,7 +77,9 @@ export default function ProfilePage() {
 
   const handleProfileUpdate = async () => {
     try {
-      await axios.put(`${API_URL}/profile`, profileForm);
+      await axios.put(`${API_URL}/profile`, profileForm, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success('Profile updated successfully');
       setEditingProfile(false);
       fetchProfile();
