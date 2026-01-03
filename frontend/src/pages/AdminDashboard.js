@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Users, ShoppingBag, TrendingUp, LogOut, UserCheck, Bell, Home, Menu, Package, Percent, Ticket, Settings, Tag, CreditCard } from 'lucide-react';
+import { Users, ShoppingBag, TrendingUp, LogOut, UserCheck, Bell, Home, Menu, Package, Percent, Ticket, Settings, Tag, CreditCard, Image, Eye } from 'lucide-react';
 import SellerApprovals from './admin/SellerApprovals';
 import PlatformAnalytics from './admin/PlatformAnalytics';
 import BroadcastNotifications from './admin/BroadcastNotifications';
@@ -16,6 +16,8 @@ import OfferCardsManagement from './admin/OfferCardsManagement';
 import BankOffersManagement from './admin/BankOffersManagement';
 import PlatformSettings from './admin/PlatformSettings';
 import SellerPayouts from './admin/SellerPayouts';
+import StorefrontSettings from './admin/StorefrontSettings';
+import HeroBannerManagement from './admin/HeroBannerManagement';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
