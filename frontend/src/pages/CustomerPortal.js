@@ -374,6 +374,26 @@ function HomePage() {
     }
   };
 
+  const handleNotificationClick = async (notification) => {
+    // Mark as read
+    if (!notification.is_read) {
+      try {
+        await axios.put(`${API_URL}/notifications/${notification.id}/read`);
+        setNotifications(prev => 
+          prev.map(n => n.id === notification.id ? { ...n, is_read: true } : n)
+        );
+      } catch (error) {
+        console.error('Error marking notification as read:', error);
+      }
+    }
+    
+    // Navigate to link if provided
+    if (notification.link_url) {
+      setShowNotifications(false);
+      navigate(notification.link_url);
+    }
+  };
+
   const goToCategory = (category, subcategory = null) => {
     const path = subcategory 
       ? `/customer/category/${category}?sub=${encodeURIComponent(subcategory)}`
