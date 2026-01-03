@@ -343,11 +343,16 @@ export default function ProfilePage() {
                         </div>
                         <div>
                           <Label>Phone Number *</Label>
-                          <Input
-                            value={addressForm.phone}
-                            onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
-                            placeholder="10-digit number"
-                          />
+                          <div className="flex gap-2">
+                            <span className="flex items-center px-3 bg-gray-100 border rounded-l-md text-gray-600 text-sm">+91</span>
+                            <Input
+                              value={addressForm.phone}
+                              onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                              placeholder="10-digit number"
+                              maxLength={10}
+                              className="rounded-l-none"
+                            />
+                          </div>
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
