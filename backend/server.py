@@ -3039,6 +3039,69 @@ async def process_payout(
     )
     return {"message": "Payout processed"}
 
+# ============== SELLER PAYOUT APIS (SELLER VIEW) ==============
+@api_router.get("/seller/payouts")
+async def get_my_payouts(user: Dict[str, Any] = Depends(require_role([UserRole.SELLER]))):
+    """Seller views their own payouts"""
+    seller = await db.sellers.find_one({"user_id": user["id"]}, {"_id": 0})
+    if not seller:
+        raise HTTPException(status_code=404, detail="Seller profile not found")
+    
+    payouts = await db.seller_payouts.find(
+        {"seller_id": seller["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    return payouts
+
+@api_router.get("/seller/platform-fees")
+async def get_my_platform_fees(user: Dict[str, Any] = Depends(require_role([UserRole.SELLER]))):
+    """Seller views platform fees deducted from their orders"""
+    seller = await db.sellers.find_one({"user_id": user["id"]}, {"_id": 0})
+    if not seller:
+        raise HTTPException(status_code=404, detail="Seller profile not found")
+    
+    fees = await db.platform_fees.find(
+        {"seller_id": seller["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    total_fees = sum(fee.get("fee_amount", 0) for fee in fees)
+    total_payout = sum(fee.get("seller_payout", 0) for fee in fees)
+    
+    return {
+        "fees": fees,
+        "summary": {
+            "total_orders": len(fees),
+            "total_fee_amount": round(total_fees, 2),
+            "total_seller_payout": round(total_payout, 2)
+        }
+    }
+
+@api_router.get("/seller/earnings-summary")
+async def get_seller_earnings_summary(user: Dict[str, Any] = Depends(require_role([UserRole.SELLER]))):
+    """Seller views their earnings summary"""
+    seller = await db.sellers.find_one({"user_id": user["id"]}, {"_id": 0})
+    if not seller:
+        raise HTTPException(status_code=404, detail="Seller profile not found")
+    
+    # Get platform fees (order-wise earnings)
+    fees = await db.platform_fees.find({"seller_id": seller["id"]}, {"_id": 0}).to_list(1000)
+    total_earnings = sum(fee.get("seller_payout", 0) for fee in fees)
+    total_platform_fee = sum(fee.get("fee_amount", 0) for fee in fees)
+    
+    # Get payouts
+    payouts = await db.seller_payouts.find({"seller_id": seller["id"]}, {"_id": 0}).to_list(1000)
+    total_paid = sum(p.get("net_payout", 0) for p in payouts if p.get("status") == "paid")
+    pending_payout = total_earnings - total_paid
+    
+    return {
+        "total_earnings": round(total_earnings, 2),
+        "total_paid": round(total_paid, 2),
+        "pending_payout": round(pending_payout, 2),
+        "total_platform_fee": round(total_platform_fee, 2),
+        "total_orders": len(fees)
+    }
+
 # ============== NOTIFICATION READ STATUS ==============
 @api_router.put("/notifications/{notification_id}/read")
 async def mark_notification_read(
