@@ -30,8 +30,9 @@ export default function BusinessVerification() {
 
   const fetchVerification = async () => {
     try {
+      const authToken = token || localStorage.getItem('token');
       const response = await axios.get(`${API_URL}/business-verification`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${authToken}` }
       });
       setVerification(response.data);
       setFormData({
@@ -43,7 +44,11 @@ export default function BusinessVerification() {
         trade_license: response.data.trade_license || ''
       });
     } catch (error) {
-      toast.error('Failed to fetch verification details');
+      console.error('Failed to fetch verification details:', error);
+      // Don't show error toast if just no data exists yet
+      if (error.response?.status !== 404) {
+        toast.error('Failed to fetch verification details');
+      }
     } finally {
       setLoading(false);
     }
@@ -52,10 +57,11 @@ export default function BusinessVerification() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const authToken = token || localStorage.getItem('token');
       await axios.put(
         `${API_URL}/business-verification`,
         formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${authToken}` } }
       );
       toast.success('Verification details updated successfully');
       fetchVerification();
