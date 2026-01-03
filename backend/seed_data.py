@@ -144,7 +144,9 @@ async def seed_database():
             "mrp": 999,
             "sku": "FSH001",
             "images": ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"],
-            "specifications": {"Material": "100% Cotton", "Fit": "Regular", "Color": "Black"},
+            "specifications": {"Material": "100% Cotton", "Fit": "Regular"},
+            "sizes": ["S", "M", "L", "XL", "XXL"],
+            "colors": [{"name": "Black", "hex": "#000000"}, {"name": "White", "hex": "#FFFFFF"}, {"name": "Navy", "hex": "#000080"}],
             "is_active": True,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat()
@@ -159,7 +161,9 @@ async def seed_database():
             "mrp": 1999,
             "sku": "FSH002",
             "images": ["https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"],
-            "specifications": {"Material": "Denim", "Fit": "Slim", "Color": "Blue"},
+            "specifications": {"Material": "Denim", "Fit": "Slim"},
+            "sizes": ["28", "30", "32", "34", "36"],
+            "colors": [{"name": "Blue", "hex": "#0000FF"}, {"name": "Black", "hex": "#000000"}],
             "is_active": True,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat()
@@ -174,7 +178,9 @@ async def seed_database():
             "mrp": 2999,
             "sku": "FSH003",
             "images": ["https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400"],
-            "specifications": {"Material": "Canvas", "Size": "UK 8", "Color": "White"},
+            "specifications": {"Material": "Canvas"},
+            "sizes": ["UK 6", "UK 7", "UK 8", "UK 9", "UK 10"],
+            "colors": [{"name": "White", "hex": "#FFFFFF"}, {"name": "Black", "hex": "#000000"}, {"name": "Red", "hex": "#FF0000"}],
             "is_active": True,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat()
@@ -189,7 +195,9 @@ async def seed_database():
             "mrp": 7999,
             "sku": "FSH004",
             "images": ["https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400"],
-            "specifications": {"Material": "Genuine Leather", "Fit": "Slim", "Color": "Brown"},
+            "specifications": {"Material": "Genuine Leather", "Fit": "Slim"},
+            "sizes": ["S", "M", "L", "XL"],
+            "colors": [{"name": "Brown", "hex": "#8B4513"}, {"name": "Black", "hex": "#000000"}],
             "is_active": True,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat()
