@@ -959,6 +959,171 @@ async def login(credentials: UserLogin):
 async def get_me(user: Dict[str, Any] = Depends(get_current_user)):
     return user
 
+# ============== OTP AUTHENTICATION ==============
+import random
+import string
+
+# In-memory OTP storage (use Redis in production)
+otp_storage = {}
+
+def generate_otp():
+    return ''.join(random.choices(string.digits, k=6))
+
+class OtpRequest(BaseModel):
+    phone: str
+    method: str = "sms"  # sms or whatsapp
+
+class OtpVerifyLogin(BaseModel):
+    phone: str
+    otp: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class VerifyResetOtp(BaseModel):
+    email: str
+    otp: str
+
+class ResetPasswordRequest(BaseModel):
+    email: str
+    otp: str
+    new_password: str
+
+@api_router.post("/auth/send-otp")
+async def send_otp(request: OtpRequest):
+    """Send OTP for phone login"""
+    phone = request.phone
+    if not phone or len(phone) != 10:
+        raise HTTPException(status_code=400, detail="Invalid phone number")
+    
+    # Check if user exists with this phone
+    user = await db.users.find_one({"phone": phone})
+    if not user:
+        raise HTTPException(status_code=404, detail="No account found with this phone number")
+    
+    otp = generate_otp()
+    otp_storage[f"login_{phone}"] = {
+        "otp": otp,
+        "expires": datetime.now(timezone.utc) + timedelta(minutes=10),
+        "attempts": 0
+    }
+    
+    # In production, integrate with SMS/WhatsApp API
+    # For now, log the OTP (DEMO MODE)
+    logger.info(f"OTP for {phone} ({request.method}): {otp}")
+    
+    return {"message": f"OTP sent via {request.method}", "demo_otp": otp}  # Remove demo_otp in production
+
+@api_router.post("/auth/verify-otp-login", response_model=Token)
+async def verify_otp_login(request: OtpVerifyLogin):
+    """Verify OTP and login"""
+    phone = request.phone
+    otp_key = f"login_{phone}"
+    
+    if otp_key not in otp_storage:
+        raise HTTPException(status_code=400, detail="OTP expired or not sent")
+    
+    stored = otp_storage[otp_key]
+    
+    if stored["attempts"] >= 3:
+        del otp_storage[otp_key]
+        raise HTTPException(status_code=429, detail="Too many attempts. Please request new OTP")
+    
+    if datetime.now(timezone.utc) > stored["expires"]:
+        del otp_storage[otp_key]
+        raise HTTPException(status_code=400, detail="OTP expired")
+    
+    if stored["otp"] != request.otp:
+        stored["attempts"] += 1
+        raise HTTPException(status_code=400, detail="Invalid OTP")
+    
+    # OTP verified - login user
+    del otp_storage[otp_key]
+    
+    user = await db.users.find_one({"phone": phone})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    token = create_access_token({"sub": user["id"], "role": user["role"]})
+    del user["password_hash"]
+    del user["_id"]
+    
+    return Token(access_token=token, token_type="bearer", user=user)
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    """Send OTP for password reset"""
+    user = await db.users.find_one({"email": request.email})
+    if not user:
+        raise HTTPException(status_code=404, detail="No account found with this email")
+    
+    otp = generate_otp()
+    otp_storage[f"reset_{request.email}"] = {
+        "otp": otp,
+        "expires": datetime.now(timezone.utc) + timedelta(minutes=10),
+        "attempts": 0,
+        "verified": False
+    }
+    
+    # In production, send email with OTP
+    logger.info(f"Password reset OTP for {request.email}: {otp}")
+    
+    return {"message": "OTP sent to your email", "demo_otp": otp}  # Remove demo_otp in production
+
+@api_router.post("/auth/verify-reset-otp")
+async def verify_reset_otp(request: VerifyResetOtp):
+    """Verify OTP for password reset"""
+    otp_key = f"reset_{request.email}"
+    
+    if otp_key not in otp_storage:
+        raise HTTPException(status_code=400, detail="OTP expired or not sent")
+    
+    stored = otp_storage[otp_key]
+    
+    if stored["attempts"] >= 3:
+        del otp_storage[otp_key]
+        raise HTTPException(status_code=429, detail="Too many attempts. Please request new OTP")
+    
+    if datetime.now(timezone.utc) > stored["expires"]:
+        del otp_storage[otp_key]
+        raise HTTPException(status_code=400, detail="OTP expired")
+    
+    if stored["otp"] != request.otp:
+        stored["attempts"] += 1
+        raise HTTPException(status_code=400, detail="Invalid OTP")
+    
+    # Mark OTP as verified
+    stored["verified"] = True
+    
+    return {"message": "OTP verified successfully"}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(request: ResetPasswordRequest):
+    """Reset password after OTP verification"""
+    otp_key = f"reset_{request.email}"
+    
+    if otp_key not in otp_storage:
+        raise HTTPException(status_code=400, detail="Please verify OTP first")
+    
+    stored = otp_storage[otp_key]
+    
+    if not stored.get("verified"):
+        raise HTTPException(status_code=400, detail="Please verify OTP first")
+    
+    if stored["otp"] != request.otp:
+        raise HTTPException(status_code=400, detail="Invalid OTP")
+    
+    # Update password
+    new_hash = hash_password(request.new_password)
+    await db.users.update_one(
+        {"email": request.email},
+        {"$set": {"password_hash": new_hash}}
+    )
+    
+    del otp_storage[otp_key]
+    
+    return {"message": "Password reset successfully"}
+
 # ============== SELLER ROUTES ==============
 @api_router.post("/sellers/register", response_model=Seller)
 async def register_seller(
