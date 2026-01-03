@@ -62,8 +62,9 @@ function DashboardHeader({ user, logout, navigate, title, subtitle }) {
                 <div className="mt-4 flex-1 overflow-y-auto space-y-1 pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
                   {menuItems.map((item, idx) => 
                     item.divider ? (
-                      <div key={idx} className="pt-4 pb-2 px-3">
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{item.label}</p>
+                      <div key={idx} className="pt-4 pb-2 px-3 flex items-center gap-2">
+                        {item.icon && <item.icon className={`w-4 h-4 ${item.iconColor || 'text-gray-400'}`} />}
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{item.label}</p>
                       </div>
                     ) : (
                       <Button
