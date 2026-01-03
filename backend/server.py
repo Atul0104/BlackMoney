@@ -2678,6 +2678,14 @@ async def update_delivery_status(
         "failed": "pending"
     }
     
+    status_messages = {
+        "picked_up": "Your order has been picked up from the warehouse",
+        "in_transit": "Your order is in transit",
+        "out_for_delivery": "Your order is out for delivery - arriving today!",
+        "delivered": "Your order has been delivered successfully!",
+        "failed": "Delivery attempt failed. We'll try again soon."
+    }
+    
     if status_update.status in order_status_map:
         await db.orders.update_one(
             {"id": order_id},
@@ -2688,6 +2696,16 @@ async def update_delivery_status(
                 }
             }
         )
+        
+        # Send notification to customer
+        notification = Notification(
+            user_id=order["customer_id"],
+            title=f"Order Update - {status_update.status.replace('_', ' ').title()}",
+            message=status_messages.get(status_update.status, f"Order status: {status_update.status}"),
+            type="delivery_update",
+            link_url=f"/customer/orders/{order_id}"
+        )
+        await db.notifications.insert_one(notification.model_dump())
     
     return {"message": "Delivery status updated", "status": delivery_status}
 
