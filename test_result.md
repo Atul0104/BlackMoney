@@ -207,3 +207,5 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Fixed 3 issues: 1) Cart item removal now uses product_id+size+color as unique key, 2) AuthContext now exposes token for API calls, 3) Added better error handling and loading states for checkout addresses. Please test: a) Adding same product with different sizes to cart and removing one, b) Viewing saved addresses at checkout, c) Adding new address during checkout"
+  - agent: "testing"
+    message: "✅ BACKEND TESTING COMPLETE: All requested APIs tested successfully. Platform Settings API (GET /api/platform-settings and PUT /api/admin/platform-settings) working correctly with GST percentage functionality. Addresses API (POST /api/addresses and GET /api/addresses) working correctly with proper authentication and data validation. Fixed datetime serialization issue in platform settings endpoint during testing. All 6 test cases passed including customer registration, address creation/retrieval, and platform settings access/update."
