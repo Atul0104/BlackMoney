@@ -135,6 +135,9 @@ class Product(BaseModel):
     videos: List[str] = []  # Video URLs
     specifications: Dict[str, Any] = {}
     filters: Dict[str, Any] = {}  # Size, Color, Brand, etc.
+    colors: List[Dict[str, str]] = []  # [{name: "Red", hex: "#FF0000", image: "url"}]
+    sizes: List[str] = []  # ["S", "M", "L", "XL"]
+    color_images: Dict[str, List[str]] = {}  # {"Red": ["img1", "img2"], "Blue": ["img3"]}
     is_active: bool = True
     view_count: int = 0
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -151,7 +154,9 @@ class ProductCreate(BaseModel):
     videos: List[str] = []
     specifications: Dict[str, Any] = {}
     filters: Dict[str, Any] = {}
-    filters: Dict[str, Any] = {}
+    colors: List[Dict[str, str]] = []
+    sizes: List[str] = []
+    color_images: Dict[str, List[str]] = {}
 
 class Inventory(BaseModel):
     model_config = ConfigDict(extra="ignore")
