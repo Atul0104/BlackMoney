@@ -1570,29 +1570,40 @@ async def broadcast_notification(
     notification_data: NotificationCreate,
     user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))
 ):
+    """Send notifications to specific users, roles, or all users"""
+    recipients = []
+    
     if notification_data.user_ids:
-        # Targeted notification
-        for user_id in notification_data.user_ids:
-            notification = Notification(
-                user_id=user_id,
-                title=notification_data.title,
-                message=notification_data.message,
-                type=notification_data.type
-            )
-            await db.notifications.insert_one(notification.model_dump())
+        # Targeted notification to specific users
+        recipients = notification_data.user_ids
+    elif notification_data.target_roles:
+        # Send to users with specific roles
+        users = await db.users.find(
+            {"role": {"$in": notification_data.target_roles}}, 
+            {"_id": 0, "id": 1}
+        ).to_list(10000)
+        recipients = [u["id"] for u in users]
     else:
         # Broadcast to all users
         users = await db.users.find({}, {"_id": 0, "id": 1}).to_list(10000)
-        for u in users:
-            notification = Notification(
-                user_id=u["id"],
-                title=notification_data.title,
-                message=notification_data.message,
-                type=notification_data.type
-            )
-            await db.notifications.insert_one(notification.model_dump())
+        recipients = [u["id"] for u in users]
     
-    return {"message": "Notifications sent"}
+    # Create notifications for all recipients
+    notifications_to_insert = []
+    for user_id in recipients:
+        notification = Notification(
+            user_id=user_id,
+            title=notification_data.title,
+            message=notification_data.message,
+            type=notification_data.type,
+            link_url=notification_data.link_url
+        )
+        notifications_to_insert.append(notification.model_dump())
+    
+    if notifications_to_insert:
+        await db.notifications.insert_many(notifications_to_insert)
+    
+    return {"message": f"Notifications sent to {len(recipients)} users"}
 
 # ============== SUPPORT ROUTES ==============
 @api_router.post("/support/tickets", response_model=SupportTicket)
