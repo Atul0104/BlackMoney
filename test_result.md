@@ -351,6 +351,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ TESTED: Seller orders page working correctly at /seller/orders. Orders display properly, shipping label generation buttons available. Warehouse selection functionality present. Orders management fully functional."
+      - working: true
+        agent: "testing"
+        comment: "✅ RE-TESTED: Complete shipping label generation workflow tested successfully. FIXED: React Select component error with empty string values. VERIFIED: 1) Login as seller1@example.com works, 2) Orders page loads with 2 orders, 3) Generate Shipping Label dialog opens with all required fields (warehouse dropdown showing 'Main Warehouse - Mumbai', delivery partner dropdown, weight/dimensions fields), 4) Label generation works - tracking ID 'FMP30622934078G' and barcode generated successfully, 5) Order updated with shipping details. Full end-to-end shipping label generation flow is working perfectly."
 
   - task: "Seller Warehouse Management"
     implemented: true
