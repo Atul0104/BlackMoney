@@ -346,6 +346,7 @@ export default function SellerDashboard() {
       <Route path="/inventory" element={<InventoryManagement />} />
       <Route path="/orders" element={<OrdersManagement />} />
       <Route path="/analytics" element={<Analytics />} />
+      <Route path="/payouts" element={<PayoutHistory />} />
       <Route path="/warehouses" element={<WarehouseManagement />} />
       <Route path="/business-verification" element={<BusinessVerification />} />
       <Route path="/performance" element={<SellerPerformance />} />
