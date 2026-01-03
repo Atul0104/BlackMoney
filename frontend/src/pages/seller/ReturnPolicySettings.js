@@ -28,8 +28,9 @@ export default function ReturnPolicySettings() {
 
   const fetchPolicy = async () => {
     try {
+      const authToken = token || localStorage.getItem('token');
       const response = await axios.get(`${API_URL}/return-policy/seller`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${authToken}` }
       });
       setPolicy(response.data);
     } catch (error) {
@@ -42,12 +43,13 @@ export default function ReturnPolicySettings() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const authToken = token || localStorage.getItem('token');
       await axios.put(
         `${API_URL}/return-policy`,
         null,
         {
           params: policy,
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${authToken}` }
         }
       );
       toast.success('Return policy updated successfully!');
