@@ -367,28 +367,32 @@ export default function ProductDetails() {
             {/* Color Selection */}
             <div>
               <h3 className="font-semibold mb-3">Select Color</h3>
-              <div className="flex gap-3">
-                {['black', 'white', 'red', 'blue'].map((color) => (
+              <div className="flex flex-wrap gap-3">
+                {(product.colors && product.colors.length > 0 ? product.colors : defaultColors).map((color) => (
                   <button
-                    key={color}
-                    onClick={() => setSelectedColor(color)}
-                    className={`w-12 h-12 rounded-full border-2 transition-all ${
-                      selectedColor === color ? 'border-blue-600 ring-2 ring-blue-200 scale-110' : 'border-gray-300'
+                    key={color.name || color}
+                    onClick={() => setSelectedColor(color.name || color)}
+                    className={`w-12 h-12 rounded-full border-2 transition-all flex items-center justify-center ${
+                      selectedColor === (color.name || color) ? 'border-blue-600 ring-2 ring-blue-200 scale-110' : 'border-gray-300'
                     }`}
-                    style={{ backgroundColor: color === 'white' ? '#fff' : color }}
-                    title={color}
+                    style={{ backgroundColor: color.hex || color }}
+                    title={color.name || color}
+                    data-testid={`color-${color.name || color}`}
                   >
-                    {color === 'white' && <div className="w-full h-full border rounded-full"></div>}
+                    {selectedColor === (color.name || color) && (
+                      <Check className={`w-5 h-5 ${(color.hex || '').toLowerCase() === '#ffffff' || color.name?.toLowerCase() === 'white' ? 'text-black' : 'text-white'}`} />
+                    )}
                   </button>
                 ))}
               </div>
+              <p className="text-sm text-gray-500 mt-2">Selected: {selectedColor}</p>
             </div>
 
             {/* Size Selection */}
             <div>
               <h3 className="font-semibold mb-3">Select Size</h3>
-              <div className="flex gap-2">
-                {sizes.map((size) => (
+              <div className="flex flex-wrap gap-2">
+                {(product.sizes && product.sizes.length > 0 ? product.sizes : sizes).map((size) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
