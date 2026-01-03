@@ -14,6 +14,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const defaultColors = [
+  { name: 'Black', hex: '#000000' },
+  { name: 'White', hex: '#FFFFFF' },
+  { name: 'Red', hex: '#EF4444' },
+  { name: 'Blue', hex: '#3B82F6' },
+  { name: 'Green', hex: '#22C55E' },
+  { name: 'Navy', hex: '#1E3A8A' }
+];
 
 export default function ProductDetails() {
   const { id } = useParams();
