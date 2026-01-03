@@ -329,6 +329,28 @@ function HomePage() {
     }
   };
 
+  const fetchVisibility = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/storefront-visibility`);
+      setVisibility(response.data);
+    } catch (error) {
+      console.error('Error fetching visibility:', error);
+    }
+  };
+
+  const fetchBestsellers = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/products/bestsellers`, { params: { limit: 8 } });
+      setBestsellers(response.data);
+    } catch (error) {
+      console.error('Error fetching bestsellers:', error);
+    }
+  };
+    } catch (error) {
+      console.error('Error fetching most viewed:', error);
+    }
+  };
+
   const fetchCategories = async () => {
     try {
       const response = await axios.get(`${API_URL}/categories`);
