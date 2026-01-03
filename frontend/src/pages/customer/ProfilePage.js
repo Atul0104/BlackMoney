@@ -113,10 +113,14 @@ export default function ProfilePage() {
 
     try {
       if (editingAddress) {
-        await axios.put(`${API_URL}/addresses/${editingAddress.id}`, addressForm);
+        await axios.put(`${API_URL}/addresses/${editingAddress.id}`, addressForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         toast.success('Address updated successfully');
       } else {
-        await axios.post(`${API_URL}/addresses`, addressForm);
+        await axios.post(`${API_URL}/addresses`, addressForm, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         toast.success('Address added successfully');
       }
       setAddressDialogOpen(false);
@@ -124,7 +128,8 @@ export default function ProfilePage() {
       resetAddressForm();
       fetchAddresses();
     } catch (error) {
-      toast.error('Failed to save address');
+      console.error('Address submit error:', error);
+      toast.error(error.response?.data?.detail || 'Failed to save address');
     }
   };
 
