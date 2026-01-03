@@ -197,7 +197,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Addresses API"
     - "Cart Item Management"
     - "Checkout Address Loading"
   stuck_tasks: []
