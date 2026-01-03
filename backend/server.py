@@ -3221,6 +3221,12 @@ async def update_platform_settings(
     )
     
     settings = await db.platform_settings.find_one({"id": "platform_settings"}, {"_id": 0})
+    
+    # Convert datetime to ISO string for JSON serialization
+    if settings and "updated_at" in settings:
+        if hasattr(settings["updated_at"], "isoformat"):
+            settings["updated_at"] = settings["updated_at"].isoformat()
+    
     return settings
 
 # ============== SELLER PAYOUT APIS ==============
