@@ -97,7 +97,7 @@ export default function OrdersManagement() {
         `${API_URL}/shipping-labels`,
         {
           order_id: selectedOrder.id,
-          delivery_partner_id: labelData.delivery_partner_id || null,
+          delivery_partner_id: labelData.delivery_partner_id === 'none' ? null : labelData.delivery_partner_id || null,
           warehouse_id: labelData.warehouse_id,
           weight: labelData.weight ? parseFloat(labelData.weight) : null,
           dimensions: labelData.dimensions || null
