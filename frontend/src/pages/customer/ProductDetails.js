@@ -633,19 +633,34 @@ export default function ProductDetails() {
         {similar.length > 0 && (
           <div className="mt-8">
             <h2 className="text-2xl font-bold mb-4">Similar Products</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {similar.slice(0, 4).map((item) => (
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {similar.slice(0, 6).map((item) => (
                 <Card
                   key={item.id}
-                  className="cursor-pointer hover:shadow-lg transition-shadow"
+                  className="cursor-pointer hover:shadow-lg transition-all hover:scale-105 group"
                   onClick={() => navigate(`/customer/product/${item.id}`)}
+                  data-testid={`similar-product-${item.id}`}
                 >
                   <CardContent className="p-3">
-                    <div className="aspect-square bg-gray-100 rounded mb-2">
-                      <img src={item.images?.[0] || ''} alt={item.name} className="w-full h-full object-cover" />
+                    <div className="aspect-square bg-gray-100 rounded mb-2 overflow-hidden relative">
+                      <img 
+                        src={item.images?.[0] || 'https://via.placeholder.com/200'} 
+                        alt={item.name} 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" 
+                      />
+                      {item.mrp > item.price && (
+                        <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                          {Math.round(((item.mrp - item.price) / item.mrp) * 100)}% OFF
+                        </span>
+                      )}
                     </div>
-                    <h3 className="font-semibold text-sm truncate">{item.name}</h3>
-                    <p className="text-lg font-bold">₹{item.price}</p>
+                    <h3 className="font-semibold text-sm truncate group-hover:text-purple-600 transition-colors">{item.name}</h3>
+                    <div className="flex items-baseline gap-2 mt-1">
+                      <p className="text-lg font-bold text-green-600">₹{item.price}</p>
+                      {item.mrp > item.price && (
+                        <p className="text-sm text-gray-400 line-through">₹{item.mrp}</p>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               ))}
