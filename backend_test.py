@@ -148,6 +148,98 @@ class BackendTester:
             self.log_result("Admin Login", False, f"Exception: {str(e)}")
             return False
     
+    def register_seller(self):
+        """Register a seller user for testing"""
+        try:
+            url = f"{self.base_url}/auth/register"
+            data = {
+                "email": "testseller@test.com",
+                "password": "Seller123!",
+                "name": "Test Seller",
+                "role": "seller"
+            }
+            
+            response = requests.post(url, json=data)
+            
+            if response.status_code == 201 or response.status_code == 200:
+                result = response.json()
+                self.seller_token = result.get("access_token")
+                self.test_seller_id = result.get("user", {}).get("id")
+                self.log_result("Seller Registration", True, "Seller registered successfully")
+                return True
+            elif response.status_code == 400 and "already registered" in response.text:
+                # Try to login instead
+                return self.login_seller()
+            else:
+                self.log_result("Seller Registration", False, f"Failed with status {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_result("Seller Registration", False, f"Exception: {str(e)}")
+            return False
+    
+    def login_seller(self):
+        """Login seller if already exists"""
+        try:
+            url = f"{self.base_url}/auth/login"
+            data = {
+                "email": "testseller@test.com",
+                "password": "Seller123!"
+            }
+            
+            response = requests.post(url, json=data)
+            
+            if response.status_code == 200:
+                result = response.json()
+                self.seller_token = result.get("access_token")
+                self.test_seller_id = result.get("user", {}).get("id")
+                self.log_result("Seller Login", True, "Seller logged in successfully")
+                return True
+            else:
+                self.log_result("Seller Login", False, f"Failed with status {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_result("Seller Login", False, f"Exception: {str(e)}")
+            return False
+    
+    def create_seller_profile(self):
+        """Create seller profile for testing return policy endpoint"""
+        if not self.seller_token:
+            self.log_result("Create Seller Profile", False, "No seller token available")
+            return False
+            
+        try:
+            url = f"{self.base_url}/sellers/register"
+            headers = {"Authorization": f"Bearer {self.seller_token}"}
+            data = {
+                "business_name": "Test Business",
+                "business_email": "business@test.com",
+                "business_phone": "9876543210",
+                "gst_number": "29ABCDE1234F1Z5",
+                "address": "123 Business Street",
+                "city": "Bangalore",
+                "state": "Karnataka",
+                "pincode": "560001"
+            }
+            
+            response = requests.post(url, json=data, headers=headers)
+            
+            if response.status_code == 201 or response.status_code == 200:
+                result = response.json()
+                self.log_result("Create Seller Profile", True, "Seller profile created successfully", result)
+                return True
+            elif response.status_code == 400 and "already exists" in response.text:
+                self.log_result("Create Seller Profile", True, "Seller profile already exists")
+                return True
+            else:
+                self.log_result("Create Seller Profile", False, f"Failed with status {response.status_code}", response.text)
+                return False
+                
+        except Exception as e:
+            self.log_result("Create Seller Profile", False, f"Exception: {str(e)}")
+            return False
+    
     def test_platform_settings_get(self):
         """Test GET /api/platform-settings (no auth required)"""
         try:
