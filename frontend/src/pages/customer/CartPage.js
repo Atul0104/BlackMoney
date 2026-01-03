@@ -5,6 +5,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { toast } from 'sonner';
 
+// Helper function to create a unique key for cart items
+const getCartItemKey = (item) => {
+  return `${item.product_id}-${item.size || 'default'}-${item.color || 'default'}`;
+};
+
 export default function CartPage() {
   const [cart, setCart] = useState([]);
   const navigate = useNavigate();
@@ -18,9 +23,13 @@ export default function CartPage() {
     setCart(savedCart);
   };
 
-  const updateQuantity = (productId, delta) => {
+  // Updated to handle items with different sizes/colors
+  const updateQuantity = (productId, size, color, delta) => {
     const updatedCart = cart.map(item => {
-      if (item.product_id === productId) {
+      // Match by product_id AND size AND color
+      if (item.product_id === productId && 
+          (item.size || 'default') === (size || 'default') && 
+          (item.color || 'default') === (color || 'default')) {
         return { ...item, quantity: Math.max(1, item.quantity + delta) };
       }
       return item;
@@ -29,8 +38,15 @@ export default function CartPage() {
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  const removeItem = (productId) => {
-    const updatedCart = cart.filter(item => item.product_id !== productId);
+  // Updated to remove only the specific item (by product_id + size + color)
+  const removeItem = (productId, size, color) => {
+    const updatedCart = cart.filter(item => {
+      // Keep items that don't match ALL criteria (product_id AND size AND color)
+      const matchesProduct = item.product_id === productId;
+      const matchesSize = (item.size || 'default') === (size || 'default');
+      const matchesColor = (item.color || 'default') === (color || 'default');
+      return !(matchesProduct && matchesSize && matchesColor);
+    });
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
     toast.success('Item removed from cart');
