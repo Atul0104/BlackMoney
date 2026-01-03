@@ -103,51 +103,148 @@
 #====================================================================================================
 
 user_problem_statement: |
-  Multi-seller ecommerce platform fixes:
-  1. GST percentage can be edited by admin (feature already exists, verified working)
-  2. Saved addresses not showing at checkout - FIXED (AuthContext wasn't exposing token)
-  3. Unable to add new address during checkout - FIXED (token issue resolved)
-  4. Cart item cancellation bug - when same item added twice with different sizes, removing one removes both - FIXED (now uses product_id + size + color as unique key)
+  Multi-seller ecommerce platform - Phase 2 enhancements:
+  1. Admin Notification System - Add recipient selection (All/Roles/Specific users)
+  2. Auto-notifications for new user registration and seller validation
+  3. Seller Return Policy Settings - Fixed API endpoint
+  4. Delivery Partner Dashboard with full tracking
+  5. Order tracking with delivery status updates
+  6. Notification click navigation and read status
+  7. Cart clearing after order placement (already working)
 
 backend:
-  - task: "Platform Settings API - GST percentage"
+  - task: "Enhanced Notification System"
     implemented: true
     working: true
     file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "main"
-        comment: "GST percentage API already exists and working at /api/platform-settings and /api/admin/platform-settings"
-      - working: true
-        agent: "testing"
-        comment: "✅ TESTED: Platform Settings API fully functional. GET /api/platform-settings returns platform settings with gst_percentage (no auth required). PUT /api/admin/platform-settings allows admin to update gst_percentage (requires admin auth). Fixed datetime serialization issue during testing. Both endpoints working correctly."
-
-  - task: "Addresses API"
-    implemented: true
-    working: true
-    file: "backend/server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-      - working: true
-        agent: "main"
-        comment: "Backend API exists at /api/addresses - GET, POST, PUT, DELETE"
-      - working: true
-        agent: "testing"
-        comment: "✅ TESTED: All address APIs working correctly. Customer registration, address creation (POST /api/addresses), and address retrieval (GET /api/addresses) all functioning properly. Created test addresses with required fields (name, phone, pincode, address_line1, city, state, address_type) and verified they are returned correctly."
-
-frontend:
-  - task: "Cart Item Management with Size/Color"
-    implemented: true
-    working: true
-    file: "frontend/src/pages/customer/CartPage.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added target_roles and link_url to NotificationCreate. Updated broadcast endpoint to support role-based and specific user targeting."
+
+  - task: "User Registration Notifications"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added auto-notification to admins when new user registers. Extra notification for seller approval requests."
+
+  - task: "Delivery Partner Role"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added delivery_partner role to UserRole enum. Updated delivery partner registration to use this role."
+
+  - task: "Return Policy Seller Endpoint"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added GET /api/return-policy/seller endpoint for seller to fetch own policy."
+
+  - task: "Delivery Status Notifications"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added customer notifications when delivery status changes with link to order tracking."
+
+  - task: "Admin Get Users Endpoint"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added GET /api/admin/users endpoint to fetch all users with optional role filter."
+
+frontend:
+  - task: "Admin Broadcast Notifications UI"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/admin/BroadcastNotifications.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Completely rewrote with recipient selection (All/By Role/Specific Users), user search, and role checkboxes."
+
+  - task: "Seller Return Policy Fix"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/seller/ReturnPolicySettings.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Fixed token retrieval to use localStorage fallback."
+
+  - task: "Delivery Partner Dashboard"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/DeliveryPartnerDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Created full delivery partner dashboard with order list, status updates, stats, filters, and customer contact."
+
+  - task: "Notification Click Navigation"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/CustomerPortal.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added handleNotificationClick to mark as read and navigate to link_url. Updated notification dropdown UI."
+
+  - task: "App Routes for Delivery Partner"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added /delivery/* route for delivery partner dashboard."
     status_history:
       - working: true
         agent: "main"
