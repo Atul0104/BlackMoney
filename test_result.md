@@ -225,11 +225,14 @@ frontend:
     file: "frontend/src/pages/seller/ReturnPolicySettings.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Fixed token retrieval to use localStorage fallback."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Seller return policy page working correctly at /seller/return-policy. All form fields visible (Enable Returns, Return Window, Enable Replacements, Terms & Conditions). ROUTE ISSUE: Review request mentioned /seller/returns but actual route is /seller/return-policy."
 
   - task: "Delivery Partner Dashboard"
     implemented: true
