@@ -1765,6 +1765,19 @@ async def get_categories():
     categories = list(set(p["category"] for p in products))
     return {"categories": categories}
 
+# ============== ADMIN USER MANAGEMENT ==============
+@api_router.get("/admin/users")
+async def get_all_users(
+    role: Optional[str] = None,
+    user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))
+):
+    """Get all users for admin - optional filter by role"""
+    query = {}
+    if role:
+        query["role"] = role
+    
+    users = await db.users.find(query, {"_id": 0, "password_hash": 0}).to_list(10000)
+    return users
 
 # ============== COUPON ROUTES ==============
 @api_router.post("/admin/coupons", response_model=Coupon)
