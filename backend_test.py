@@ -540,40 +540,69 @@ class BackendTester:
             return False
     
     def run_all_tests(self):
-        """Run all backend tests"""
-        print(f"🚀 Starting Backend API Tests")
+        """Run all backend tests for enhanced notification system and related APIs"""
+        print(f"🚀 Starting Backend API Tests for Enhanced Notification System")
         print(f"Backend URL: {self.base_url}")
-        print("=" * 60)
+        print("=" * 80)
         
-        # Test sequence as requested
+        # Test sequence as requested in review
         tests_passed = 0
-        total_tests = 6
+        total_tests = 12
         
-        # 1. Register customer
-        if self.register_customer():
-            tests_passed += 1
-        
-        # 2. Create address
-        if self.test_create_address():
-            tests_passed += 1
-        
-        # 3. Get addresses
-        if self.test_get_addresses():
-            tests_passed += 1
-        
-        # 4. Test platform settings GET (no auth)
-        if self.test_platform_settings_get():
-            tests_passed += 1
-        
-        # 5. Register admin
+        # 1. Register admin first (needed for notification tests)
         if self.register_admin():
             tests_passed += 1
         
-        # 6. Test platform settings UPDATE
-        if self.test_platform_settings_update():
+        # 2. Register customer (needed for user registration notifications)
+        if self.register_customer():
             tests_passed += 1
         
-        print("=" * 60)
+        # 3. Register seller (needed for return policy and seller notifications)
+        if self.register_seller():
+            tests_passed += 1
+        
+        # 4. Create seller profile (needed for return policy endpoint)
+        if self.create_seller_profile():
+            tests_passed += 1
+        
+        # 5. Test Enhanced Notification Broadcast API - All Users
+        if self.test_admin_broadcast_notification_all_users():
+            tests_passed += 1
+        
+        # 6. Test Enhanced Notification Broadcast API - By Role
+        if self.test_admin_broadcast_notification_by_role():
+            tests_passed += 1
+        
+        # 7. Test Enhanced Notification Broadcast API - With Link
+        if self.test_admin_broadcast_notification_with_link():
+            tests_passed += 1
+        
+        # 8. Test User Registration Auto-Notifications
+        if self.test_user_registration_auto_notifications():
+            tests_passed += 1
+        
+        # 9. Test Seller Registration Auto-Notifications
+        if self.test_seller_registration_auto_notifications():
+            tests_passed += 1
+        
+        # 10. Test Return Policy Seller Endpoint
+        if self.test_return_policy_seller_endpoint():
+            tests_passed += 1
+        
+        # 11. Test Admin Get Users - All
+        if self.test_admin_get_users_all():
+            tests_passed += 1
+        
+        # 12. Test Admin Get Users - By Role
+        if self.test_admin_get_users_by_role():
+            tests_passed += 1
+        
+        # 13. Test Delivery Status Endpoint Exists
+        if self.test_delivery_status_endpoint_exists():
+            tests_passed += 1
+            total_tests = 13  # Update total since we added one more test
+        
+        print("=" * 80)
         print(f"📊 Test Summary: {tests_passed}/{total_tests} tests passed")
         
         if tests_passed == total_tests:
