@@ -319,6 +319,8 @@ export default function AdminDashboard() {
       <Route path="/footer" element={<FooterManagement />} />
       <Route path="/settings" element={<PlatformSettings />} />
       <Route path="/payouts" element={<SellerPayouts />} />
+      <Route path="/storefront" element={<StorefrontSettings />} />
+      <Route path="/banners" element={<HeroBannerManagement />} />
     </Routes>
   );
 }
