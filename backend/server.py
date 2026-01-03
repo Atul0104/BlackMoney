@@ -936,6 +936,30 @@ async def register(user_data: UserCreate):
     user_dict = user.model_dump()
     del user_dict["password_hash"]
     
+    # Send notification to all admins about new user registration
+    admins = await db.users.find({"role": "admin"}, {"_id": 0, "id": 1}).to_list(100)
+    for admin in admins:
+        admin_notification = Notification(
+            user_id=admin["id"],
+            title="New User Registration",
+            message=f"New {user_data.role} registered: {user_data.name} ({user_data.email})",
+            type="admin_broadcast",
+            link_url="/admin/users" if user_data.role == "customer" else "/admin/sellers"
+        )
+        await db.notifications.insert_one(admin_notification.model_dump())
+    
+    # If seller, notify admins about pending approval
+    if user_data.role == UserRole.SELLER.value:
+        for admin in admins:
+            seller_notification = Notification(
+                user_id=admin["id"],
+                title="New Seller Registration - Approval Required",
+                message=f"Seller {user_data.name} ({user_data.email}) requires approval",
+                type="seller_approval",
+                link_url="/admin/sellers/approvals"
+            )
+            await db.notifications.insert_one(seller_notification.model_dump())
+    
     return Token(access_token=token, token_type="bearer", user=user_dict)
 
 @api_router.post("/auth/login", response_model=Token)
