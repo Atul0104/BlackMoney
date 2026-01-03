@@ -53,7 +53,9 @@ export default function ProfilePage() {
 
   const fetchProfile = async () => {
     try {
-      const response = await axios.get(`${API_URL}/profile`);
+      const response = await axios.get(`${API_URL}/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setProfile(response.data);
       setProfileForm({ name: response.data.name, phone: response.data.phone || '' });
     } catch (error) {
@@ -64,7 +66,9 @@ export default function ProfilePage() {
 
   const fetchAddresses = async () => {
     try {
-      const response = await axios.get(`${API_URL}/addresses`);
+      const response = await axios.get(`${API_URL}/addresses`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setAddresses(response.data);
     } catch (error) {
       console.error('Error fetching addresses:', error);
