@@ -31,8 +31,10 @@ export default function CheckoutPage() {
   
   // Address state
   const [savedAddresses, setSavedAddresses] = useState([]);
+  const [addressesLoading, setAddressesLoading] = useState(true);
   const [selectedAddressId, setSelectedAddressId] = useState('');
   const [showNewAddressDialog, setShowNewAddressDialog] = useState(false);
+  const [savingAddress, setSavingAddress] = useState(false);
   const [addressForm, setAddressForm] = useState({
     name: '',
     phone: '',
