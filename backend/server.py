@@ -314,16 +314,6 @@ class TickerMessage(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     created_by: str
 
-class Notification(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    user_id: str
-    title: str
-    message: str
-    type: str  # order_update, marketing, admin_broadcast
-    is_read: bool = False
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
 class NotificationCreate(BaseModel):
     title: str
     message: str
