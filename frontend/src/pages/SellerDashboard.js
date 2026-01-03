@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, ShoppingBag, TrendingUp, LogOut, Plus, Settings, Home, Menu, Bell } from 'lucide-react';
+import { Package, ShoppingBag, TrendingUp, LogOut, Plus, Settings, Home, Menu, Bell, Wallet } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import SellerSetup from './seller/SellerSetup';
 import ProductsManagement from './seller/ProductsManagement';
