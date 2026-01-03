@@ -106,11 +106,20 @@ export default function CheckoutPage() {
   };
 
   const fetchSavedAddresses = async () => {
+    setAddressesLoading(true);
     try {
+      // Get token from localStorage as fallback
+      const authToken = token || localStorage.getItem('token');
+      if (!authToken) {
+        console.error('No auth token available');
+        setAddressesLoading(false);
+        return;
+      }
+      
       const response = await axios.get(`${API_URL}/addresses`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${authToken}` }
       });
-      setSavedAddresses(response.data);
+      setSavedAddresses(response.data || []);
       // Select default address
       const defaultAddr = response.data.find(a => a.is_default);
       if (defaultAddr) {
@@ -120,6 +129,9 @@ export default function CheckoutPage() {
       }
     } catch (error) {
       console.error('Error fetching addresses:', error);
+      toast.error('Failed to load saved addresses');
+    } finally {
+      setAddressesLoading(false);
     }
   };
 
