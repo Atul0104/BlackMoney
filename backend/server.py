@@ -3223,6 +3223,171 @@ async def get_categories_list():
         "New Arrivals"
     ]
 
+# ============== STOREFRONT VISIBILITY APIS ==============
+@api_router.get("/storefront-visibility")
+async def get_storefront_visibility():
+    """Get storefront visibility settings"""
+    visibility = await db.storefront_visibility.find_one({"id": "storefront_visibility"}, {"_id": 0})
+    if not visibility:
+        visibility = StorefrontVisibility().model_dump()
+        await db.storefront_visibility.insert_one(visibility)
+    return visibility
+
+@api_router.put("/admin/storefront-visibility")
+async def update_storefront_visibility(
+    updates: StorefrontVisibilityUpdate,
+    user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))
+):
+    """Admin updates storefront visibility settings"""
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    update_data["updated_at"] = datetime.now(timezone.utc)
+    
+    await db.storefront_visibility.update_one(
+        {"id": "storefront_visibility"},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    visibility = await db.storefront_visibility.find_one({"id": "storefront_visibility"}, {"_id": 0})
+    return visibility
+
+# ============== HERO BANNER APIS ==============
+@api_router.get("/hero-banners")
+async def get_hero_banners():
+    """Get all active hero banners"""
+    banners = await db.hero_banners.find(
+        {"is_active": True}, 
+        {"_id": 0}
+    ).sort("display_order", 1).to_list(20)
+    return banners
+
+@api_router.get("/admin/hero-banners")
+async def get_all_hero_banners(user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))):
+    """Admin gets all hero banners"""
+    banners = await db.hero_banners.find({}, {"_id": 0}).sort("display_order", 1).to_list(100)
+    return banners
+
+@api_router.post("/admin/hero-banners")
+async def create_hero_banner(
+    banner_data: HeroBannerCreate,
+    user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))
+):
+    """Admin creates a new hero banner"""
+    banner = HeroBanner(**banner_data.model_dump())
+    await db.hero_banners.insert_one(banner.model_dump())
+    return banner
+
+@api_router.put("/admin/hero-banners/{banner_id}")
+async def update_hero_banner(
+    banner_id: str,
+    updates: HeroBannerUpdate,
+    user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))
+):
+    """Admin updates a hero banner"""
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    await db.hero_banners.update_one({"id": banner_id}, {"$set": update_data})
+    banner = await db.hero_banners.find_one({"id": banner_id}, {"_id": 0})
+    return banner
+
+@api_router.delete("/admin/hero-banners/{banner_id}")
+async def delete_hero_banner(
+    banner_id: str,
+    user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))
+):
+    """Admin deletes a hero banner"""
+    await db.hero_banners.delete_one({"id": banner_id})
+    return {"message": "Banner deleted"}
+
+# ============== SUPPORT SETTINGS APIS ==============
+@api_router.get("/support-settings")
+async def get_support_settings():
+    """Get support settings"""
+    settings = await db.support_settings.find_one({"id": "support_settings"}, {"_id": 0})
+    if not settings:
+        settings = SupportSettings().model_dump()
+        await db.support_settings.insert_one(settings)
+    return settings
+
+@api_router.put("/admin/support-settings")
+async def update_support_settings(
+    updates: SupportSettingsUpdate,
+    user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))
+):
+    """Admin updates support settings"""
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    update_data["updated_at"] = datetime.now(timezone.utc)
+    
+    await db.support_settings.update_one(
+        {"id": "support_settings"},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    settings = await db.support_settings.find_one({"id": "support_settings"}, {"_id": 0})
+    return settings
+
+# ============== BESTSELLERS API (Auto-updated based on orders) ==============
+@api_router.get("/products/bestsellers")
+async def get_bestseller_products(limit: int = 10):
+    """Get bestseller products based on order count"""
+    # Aggregate orders to find most ordered products
+    pipeline = [
+        {"$unwind": "$items"},
+        {"$group": {"_id": "$items.product_id", "order_count": {"$sum": "$items.quantity"}}},
+        {"$sort": {"order_count": -1}},
+        {"$limit": limit}
+    ]
+    
+    bestseller_ids = []
+    async for doc in db.orders.aggregate(pipeline):
+        bestseller_ids.append(doc["_id"])
+    
+    products = []
+    for product_id in bestseller_ids:
+        product = await db.products.find_one({"id": product_id, "is_active": True}, {"_id": 0})
+        if product:
+            products.append(product)
+    
+    # If not enough products from orders, fill with random active products
+    if len(products) < limit:
+        additional = await db.products.find(
+            {"is_active": True, "id": {"$nin": [p["id"] for p in products]}},
+            {"_id": 0}
+        ).sort("created_at", -1).limit(limit - len(products)).to_list(limit - len(products))
+        products.extend(additional)
+    
+    return products
+
+# ============== TICKER MESSAGE MANAGEMENT ==============
+@api_router.get("/admin/ticker-messages")
+async def get_all_ticker_messages(user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))):
+    """Admin gets all ticker messages"""
+    messages = await db.ticker_messages.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return messages
+
+@api_router.put("/admin/ticker/{ticker_id}")
+async def update_ticker_message(
+    ticker_id: str,
+    message: str,
+    is_active: bool = True,
+    user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))
+):
+    """Admin updates a ticker message"""
+    await db.ticker_messages.update_one(
+        {"id": ticker_id},
+        {"$set": {"message": message, "is_active": is_active}}
+    )
+    return {"message": "Ticker updated"}
+
+@api_router.delete("/admin/ticker/{ticker_id}")
+async def delete_ticker_message(
+    ticker_id: str,
+    user: Dict[str, Any] = Depends(require_role([UserRole.ADMIN]))
+):
+    """Admin deletes a ticker message"""
+    await db.ticker_messages.delete_one({"id": ticker_id})
+    return {"message": "Ticker deleted"}
+
 
 # Include the router
 app.include_router(api_router)
