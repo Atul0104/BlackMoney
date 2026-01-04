@@ -755,9 +755,14 @@ function HomePage() {
               <Button variant="link" onClick={() => navigate('/customer/category/all')}>View All →</Button>
             </div>
             <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
-              {mostViewed.slice(0, 6).map((product) => (
-                <div key={product.id} className="min-w-[200px] max-w-[220px] flex-shrink-0">
-                  <ProductCard product={product} onClick={() => navigate(`/customer/product/${product.id}`)} />
+              {(Array.isArray(mostViewed) ? mostViewed : [])
+                .slice(0, 6)
+                .map((product) => (
+                  <div key={product.id} className="min-w-[200px] max-w-[220] flex-shrink-0">
+                  <ProductCard
+                    product={product}
+                    onClick={() => navigate(`/customer/product/${product.id}`)}
+                  />
                 </div>
               ))}
             </div>
