@@ -780,7 +780,7 @@ function HomePage() {
               <Button variant="link" onClick={() => setSelectedCategory(null)}>View All →</Button>
             </div>
             <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
-              {trending.slice(0, 6).map((product) => (
+              {(Array.isArray(trending) ? trending : [])slice(0, 6).map((product) => (
                 <div key={product.id} className="min-w-[200px] max-w-[220px] flex-shrink-0">
                   <ProductCard product={product} onClick={() => navigate(`/customer/product/${product.id}`)} />
                 </div>
@@ -805,7 +805,7 @@ function HomePage() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {products.slice(0, 8).map((product) => (
+              {(Array.isArray(products) ? products : [] ).slice(0, 8).map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
