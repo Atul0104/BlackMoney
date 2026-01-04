@@ -780,7 +780,7 @@ function HomePage() {
               <Button variant="link" onClick={() => setSelectedCategory(null)}>View All →</Button>
             </div>
             <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
-              {(Array.isArray(trending) ? trending : [])slice(0, 6).map((product) => (
+              {(Array.isArray(trending) ? trending : []).slice(0, 6).map((product) => (
                 <div key={product.id} className="min-w-[200px] max-w-[220px] flex-shrink-0">
                   <ProductCard product={product} onClick={() => navigate(`/customer/product/${product.id}`)} />
                 </div>
