@@ -806,11 +806,13 @@ function HomePage() {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {(Array.isArray(products) ? products : [] ).slice(0, 8).map((product) => (
+                <div key=(product.id} className="min-w-[200px] max-w-[220] flex-shrink-0">
                 <ProductCard
                   key={product.id}
                   product={product}
                   onClick={() => navigate(`/customer/product/${product.id}`)}
                 />
+               </div>
               ))}
             </div>
           )}
