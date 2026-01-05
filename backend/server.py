@@ -19,10 +19,15 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ.get('DB_NAME', 'ecommerce_db')]
+import certifi
+mongo_url = os.environ["MONGO_URL"]
 
+client = AsyncIOMotorClient(
+    mongo_url,
+    tlsCAFile=certifi.where()
+)
+
+db = client[os.environ.get("DB_NAME", "ecommerce_db")]
 # Security
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
